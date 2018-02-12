@@ -2,15 +2,7 @@
 
 ```python
 from aide_design.play import*
-import wsuipa
-
 g = pc.gravity
-length_tank = 190 * u.m
-width_tank = 4.5 * u.m
-h_tank = 5 * u.m
-amp = 1 * u.m
-period = 4 * u.s
-
 ```
 Dispersion Equation:
 $$ \sigma^2 = gk*tanh(kh) $$
@@ -20,18 +12,18 @@ $$ \sigma^2 = gk*tanh(kh) $$
 
 $$ \lambda = \frac{2\pi}{\ k} $$
 
-$$ c_p = \sqrt{\frac{tanh(kh)}{kh}}\sqrt{gh} $$
+$$ c_p = \frac{\lambda}{T} $$
 
 $$ u = a \sigma * cos( kx - \sigma t)$$
 $$ w = a \sigma * sin( kx - \sigma t)$$
 
-$$ P = -\rho gz + \rho ga\frac{cosh(h+z)}{cosh(kh)} $$
+$$ P = -\rho gz + \rho ga\frac{cosh(k(h+z))}{cosh(kh)} $$
 
 ```python
-# @u.wraps(1 / u.m, [u.s, u.m], False)
-def wavenumber(T,h):
+
+def wavenumber(T, h):
   """Return the wavenumber of wave using period and water height from bed."""
-  k = 10 # this is a guess to find what k is
+  k = 10  # this is a guess to find what k is
   diff = (((2*np.pi)/T)**2)-(g.magnitude * k * np.tanh(k*h))
   while diff<0:
       LHS = ((2*np.pi)/T)**2
@@ -40,34 +32,62 @@ def wavenumber(T,h):
       k = k - 0.0001
   return k
 
-  def wavelength(T,h):
+def wavelength(T, h):
     """Return the wavelength of wave using period and water height from bed."""
-    k = wavenumber(T,h)
+    k = wavenumber(T, h)
     wavelength = 2 * np.pi / k
     return wavelength
 
 def celerity(T,h):
     """Return the celerity of wave using period and water height from bed."""
     k = wavenumber(T,h)
-    celerity = np.sqrt(np.tanh(k*h) / k*h) * np.sqrt(g.magnitude * h)
+    lmbda = 2 * np.pi / k
+    celerity = lmbda / T
     return celerity
 
-def celerity(T,h):
-    """Return the celerity of wave using period and water height from bed."""
+def u_vel(T,h,x,t):
+    """Return the x-velocity of a wave."""
+    sigma = (2*np.pi)/T
     k = wavenumber(T,h)
-    celerity = np.sqrt(np.tanh(k*h) / k*h) * np.sqrt(g.magnitude * h)
-    return celerity
+    a = h/2
+    u_vel = a * sigma * np.cos(k*x - sigma*t)
+    return u_vel
+
+def w_vel(T,h,x,t):
+    """Return the z-velocity of a wave."""
+    sigma = (2*np.pi)/T
+    k = wavenumber(T,h)
+    a = h/2
+    w_vel = a * sigma * np.sin(k*x - sigma*t)
+    return w_vel    
 
 def pressure(T,h,z):
-    """Return the pressure ______________________."""
+    """Return the hydrostatic and dynamic pressure from a wave."""
     temp = 25 * u.degC
     rho = pc.density_water(temp).magnitude
     k = wavenumber(T,h)
-    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * np.cosh(h+z)/np.cosh(k*z)
+    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * np.cosh(k*(h+z))/np.cosh(k*z)
     return pressure
 
-wavenumber(4,5)
-wavelength(4,5)
-celerity(4,5)
-pressure(4,5,-2)
+length_tank = 190 * u.m
+width_tank = 4.5 * u.m
+depth = 5 * u.m
+amp = 1 * u.m
+period = 4 * u.s
+
+wavenumber(period.magnitude, depth.magnitude)
+wavelength(period.magnitude, depth.magnitude)
+celerity(period.magnitude, depth.magnitude)
 ```
+1b) Find component water parcel velocities and pressure at 2 meters below the water level.
+```python
+z = -2 * u.m
+x = 0 * u.m
+t = 0 * u.s
+
+u_vel(period.magnitude, depth.magnitude, x.magnitude, t.magnitude)
+w_vel(period.magnitude, depth.magnitude, x.magnitude, t.magnitude)
+pressure(period.magnitude, depth.magnitude, z.magnitude)
+```
+
+water depth + 2a
