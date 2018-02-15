@@ -8,7 +8,7 @@ Dispersion Equation:
 $$ \sigma^2 = gk*tanh(kh) $$
 
 ### Problem 1
-1a) Find wave phase speed and wavelength
+1a) Wave phase speed and wavelength:
 
 $$ \lambda = \frac{2\pi}{\ k} $$
 
@@ -50,9 +50,9 @@ wavenumber(period.magnitude, depth.magnitude)
 wavelength(period.magnitude, depth.magnitude)
 celerity(period.magnitude, depth.magnitude)
 ```
-The wavenumber is
+The wavenumber is 0.283, the wavelength is 22.2 meters, and the celerity is 5.55 m/s.
 
-1b) Find component water parcel velocities and pressure at 2 meters below the water level.
+1b) Component water parcel velocities and pressure at 2 meters below the water level:
 
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)} cos( kx - \sigma t)$$
 $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} sin( kx - \sigma t)$$
@@ -93,12 +93,12 @@ w_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude, t.magnitude
 pressure(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude, t.magnitude, z.magnitude)
 ```
 
-NEED TO WRITE SENTENCES FOR THIS
+The u-velocity is 1.12 m/s, the w-velocity is 0.0 m/s, and the pressure is 25.8 kPa.
 
 ### Problem 2
 Design a seawall to prevent flooding of a coastal highway. The water depth of in front of the seawall is 3 m. The design wave characteristics are period T = 10 seconds and amplitude a = 0.5 m.
 
-2a) Design the minimum height of the seawall to prevent flooding.
+2a) Minimum height of the seawall to prevent flooding:
 
 The height of a seawall ($h_s$) should be determined from the amplitude of the design wave ($a$) and the water depth ($h$).   
 
@@ -113,9 +113,11 @@ print(h_s)
 
 The seawall should be designed to be 4 meters tall.
 
-2b) The maximum total force on the seawall.
+2b) Maximum total force on the seawall:
 
+The maximum force on the seawall ($F_m$) is a function of the hydrostatic and dynamic pressure of the wave. The following equation was modified from "Water Wave Mechanics for Engineers & Scientists" by Dean and Dalrymple.
 
+$$ F_m = \rho g \frac{4h^2+H^2}{2} + \rho g h H \frac{tan(kh)}{kh} $$
 
 ```python
 def max_force(T, h, a, x, t, z):
@@ -125,10 +127,12 @@ def max_force(T, h, a, x, t, z):
     rho = pc.density_water(temp).magnitude
     H = 2 * a
     k = wavenumber(T, h)
-    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/8) + (rho * g.magnitude * h * a * np.tanh(k*h)/(k*h))
+    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/2) + (rho * g.magnitude * h * H * np.tanh(k*h)/(k*h))
     return max_force
 
 period_designwave = 10 * u.s
 print(max_force(period_designwave.magnitude, h_designwave.magnitude, a_designwave.magnitude, x, t, z))
 
 ```
+
+The maximum force on the seawall is 209 N. 
