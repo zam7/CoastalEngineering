@@ -1,4 +1,6 @@
+# CEE 4350 Coastal Engineering
 # Problem Set 2
+# Zoe Maisel
 
 ```python
 from aide_design.play import*
@@ -50,9 +52,11 @@ wavenumber(period.magnitude, depth.magnitude)
 wavelength(period.magnitude, depth.magnitude)
 celerity(period.magnitude, depth.magnitude)
 ```
-The wavenumber is 0.283, the wavelength is 22.2 meters, and the celerity is 5.55 m/s.
+The wavenumber is 0.283, the wavelength is 22.2 meters, and the celerity is
+5.55 m/s.
 
-1b) Component water parcel velocities and pressure at 2 meters below the water level:
+1b) Component water parcel velocities and pressure at 2 meters below the water
+level:
 
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)} cos( kx - \sigma t)$$
 $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} sin( kx - \sigma t)$$
@@ -81,19 +85,24 @@ def pressure(T, h, a, x, t, z):
     sigma = (2*np.pi)/T
     rho = pc.density_water(temp).magnitude
     k = wavenumber(T, h)
-    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * a * np.cosh(k*(h+z))/np.cosh(k*h) * np.cos(k*x - sigma*t)
+    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * a *
+    np.cosh(k*(h+z))/np.cosh(k*h) * np.cos(k*x - sigma*t)
     return pressure
 
 z = -2 * u.m
 x = 0 * u.m
 t = 0 * u.s
 
-u_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude, t.magnitude, z.magnitude)
-w_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude, t.magnitude, z.magnitude)
-pressure(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude, t.magnitude, z.magnitude)
+u_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
+t.magnitude, z.magnitude)
+w_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
+t.magnitude, z.magnitude)
+pressure(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
+t.magnitude, z.magnitude)
 ```
 
-The u-velocity is 1.12 m/s, the w-velocity is 0.0 m/s, and the pressure is 25.8 kPa.
+The u-velocity is 1.12 m/s, the w-velocity is 0.0 m/s, and the pressure is
+25.8 kPa.
 
 ### Problem 2
 Design a seawall to prevent flooding of a coastal highway. The water depth of in front of the seawall is 3 m. The design wave characteristics are period T = 10 seconds and amplitude a = 0.5 m.
@@ -115,7 +124,8 @@ The seawall should be designed to be 4 meters tall.
 
 2b) Maximum total force on the seawall:
 
-The maximum force on the seawall ($F_m$) is a function of the hydrostatic and dynamic pressure of the wave. The following equation was modified from "Water Wave Mechanics for Engineers & Scientists" by Dean and Dalrymple.
+The maximum force on the seawall ($F_m$) is a function of the hydrostatic and dynamic pressure of the wave. The following equation was modified from "Water
+Wave Mechanics for Engineers & Scientists" by Dean and Dalrymple.
 
 $$ F_m = \rho g \frac{4h^2+H^2}{2} + \rho g h H \frac{tan(kh)}{kh} $$
 
@@ -127,12 +137,20 @@ def max_force(T, h, a, x, t, z):
     rho = pc.density_water(temp).magnitude
     H = 2 * a
     k = wavenumber(T, h)
-    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/2) + (rho * g.magnitude * h * H * np.tanh(k*h)/(k*h))
+    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/2) + (rho * g.magnitude
+    * h * H * np.tanh(k*h)/(k*h))
     return max_force
 
 period_designwave = 10 * u.s
-print(max_force(period_designwave.magnitude, h_designwave.magnitude, a_designwave.magnitude, x, t, z))
+print(max_force(period_designwave.magnitude, h_designwave.magnitude,
+a_designwave.magnitude, x, t, z))
 
 ```
 
-The maximum force on the seawall is 209 N. 
+The maximum force on the seawall is 209 N.
+
+
+```python
+# To convert the document from markdown to pdf
+pandoc Problem_Set_2.md -o Problem_Set_2.pdf
+```
