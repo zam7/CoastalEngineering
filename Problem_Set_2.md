@@ -110,8 +110,7 @@ def pressure(T, h, a, x, t, z):
     sigma = (2*np.pi)/T
     rho = pc.density_water(temp).magnitude
     k = wavenumber(T, h)
-    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * a*
-    np.cosh(k*(h+z))/np.cosh(k*h) * np.cos(k*x - sigma*t)
+    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * a * np.cosh(k*(h+z))/np.cosh(k*h) * np.cos(k*x - sigma*t)
     return pressure
 
 z_belowSWL = -2 * u.m
@@ -161,7 +160,7 @@ The seawall should be designed to be at least 4 meters tall.
 The maximum force on the seawall ($F_m$) is a function of the hydrostatic and dynamic pressure of the wave. The following equation was modified from "Water
 Wave Mechanics for Engineers & Scientists" by Dean and Dalrymple.
 
-$$ F_m = \rho g \frac{4h^2+H^2}{2} + \rho g h H \frac{tan(kh)}{kh} $$
+$$ F_m = \rho g \frac{4h^2+H^2}{8} + \rho g h a \frac{tan(kh)}{kh} $$
 
 ```python
 def max_force(T, h, a, x, t):
@@ -171,8 +170,8 @@ def max_force(T, h, a, x, t):
     rho = pc.density_water(temp).magnitude
     H = 2 * a
     k = wavenumber(T, h)
-    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/2) + (rho * g.magnitude
-    * h * H * np.tanh(k*h)/(k*h))
+    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/8) + (rho * g.magnitude
+    * h * a * np.tanh(k*h)/(k*h))
     return max_force
 
 period_designwave = 10 * u.s

@@ -38,13 +38,15 @@ $u$, $w$: x-velocity, z-velocity components
 
 $E*c_g$: energy flux
 
+$B$: width
+
 ### Governing Equations for Linear Wave Theory Analysis
 
 $$ \lambda = \frac{2\pi}{\ k} $$
 
 $$ c_g = n c_p $$
 
-$$ E_1 c_{g1} = E_2 c_{g2} $$
+$$ {E_1 c_{g1}}{B_1} = {E_2 c_{g2}}{B_2} $$
 
 $$ n = \frac{1}{2}(1+\frac{2kh}{sinh(2kh)}) $$
 
@@ -134,9 +136,9 @@ else:
 
 | $kh$ |  $\pi /10$   |
 | ---- | --- |
-|   0.314   |  0.238   |
+|   0.238   |  0.314   |
 
-Using the dispersion relationship and shallow water limits, the wave at the piles is a shallow water wave. This confirms the answer found in 1a. 
+Using the dispersion relationship and shallow water limits, $kh$ is less than $\pi /10$ and the wave at the piles is a shallow water wave. This confirms the answer found in 1a.
 
 1c) What are the maximum onshore water particle velocity ($u$ & $w$) at the location of the pile?
 
@@ -185,6 +187,7 @@ print(w_max_shallow)
 ### Problem 2
 2) A simple harmonic small harmonic amplitude progressive wave train propagates in a rectangular channel with a constant depth, $h$, with wave frequency $\sigma$. The channel width transitions from $B_1$ with amplitude $a_1$ to $B_2$ with amplitude $a_2$. Find $a_2$.
 
+Conservation of energy flux can be used to relate progressive energy, group velocity, and width.
 $$ B_1 E_1 c_{g1} = B_2 E_2 c_{g2} $$
 
 At constant wave depth, $c_{g1} = c_{g2}$.
