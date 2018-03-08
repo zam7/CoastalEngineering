@@ -1,13 +1,11 @@
 # CEE 4350 Coastal Engineering
-## Problem Set 2
+## Problem Set 3
 ## Zoe Maisel
 
 ```python
 from aide_design.play import*
 g = pc.gravity
 ```
-Dispersion Equation:
-$$ \sigma^2 = gk*tanh(kh) $$
 
 ### Variable definition:
 $g$: gravity
@@ -34,16 +32,75 @@ $F$: force
 
 $u$, $w$: x-velocity, z-velocity components
 
-
-### Problem 1
-1a) Wave phase speed and wavelength:
+### Governing Equations for Linear Wave Theory Analysis
 
 $$ \lambda = \frac{2\pi}{\ k} $$
 
-$$ c_p = \frac{\lambda}{T} $$
+$$ c_g = n c_p $$
 
+$$ E_1 c_{g1} = E_2 c_{g2} $$
+
+$$ n = \frac{1}{2}(1+\frac{2kh}{sinh(2kh)}) $$
+
+$$ \frac{a_2}{a_1} = \sqrt{\frac{c_{g1}}{c_{g2}}} $$
+
+$$ \sigma = (\frac{2\pi}{T})^2 $$
+
+$$ c_p = \frac{gT}{2 \pi}tanh(kh) $$
+
+$$ \sigma^2 = gk*tanh(kh) $$
+
+In deep water,
+$$ c_p = \frac{gT}{2 \pi} $$
+
+$$ n = \frac{1}{2} $$
+
+$$ kh > \pi $$
+
+In shallow water,
+$$ c_p = \sqrt{gh} $$
+
+$$ n = 1 $$
+
+$$ kh < \frac{\pi}{10} $$
+
+### Problem 1
+1) Design a small pier supported by piles. Water depth at front row of piles is h(x) = 2 meters. Beach slope is 1/30. "Deep water" wave buoy measured wave amplitude $a$ = 0.5 m and wave period $T$ = 12 s.
+
+Givens:
 ```python
+slope = 1/30
+depth = 5 * u.m
+amp1 = 0.5 * u.m
+period = 12 * u.s
+h2 = 2 * u.m
+sigma = 2 * np.pi / period
+```
 
+1a) What is the minimum clearance needed to maintain a dry deck:
+
+
+The waves measured by the buoys are in deep water.
+```python
+c_p1 = g * period / (2*np.pi)
+n1 = 0.5
+c_g1 = n1 * c_p1
+print(c_g1)
+```
+Assume that the waves at h(x) = 2m are shallow waves. This assumption will be checked in part 1b.
+```python
+c_p2 = np.sqrt(g*h2)
+n2 = 1
+c_g2 = n2 * c_p2
+print(c_g2)
+
+amp2 = amp1 * np.sqrt(c_g1/c_g2)
+print(amp2)
+```
+The minimum clearance needed to maintain a dry deck is 0.73 meters.
+
+1b) Are the waves at pile location "shallow water waves"?
+```python
 def wavenumber(T, h):
   """Return the wavenumber of wave using period and water height from bed."""
   k = 10  # this is a guess to find what k is
@@ -55,136 +112,85 @@ def wavenumber(T, h):
       k = k - 0.0001
   return k
 
-def wavelength(T, h):
-    """Return the wavelength of wave using period and water height from bed."""
-    k = wavenumber(T, h)
-    wavelength = 2 * np.pi / k
-    return wavelength
+k = wavenumber(period.magnitude, h2.magnitude) * 1/u.m
 
-def celerity(T,h):
-    """Return the celerity of wave using period and water height from bed."""
-    k = wavenumber(T,h)
-    lmbda = 2 * np.pi / k
-    celerity = lmbda / T
-    return celerity
+shallow_limit = np.pi/10
+deep_limit = np.pi
+shallow_test = k * h2
 
-length_tank = 190 * u.m
-width_tank = 4.5 * u.m
-depth = 5 * u.m
-amp = 1 * u.m
-period = 4 * u.s
-
-wavenumber(period.magnitude, depth.magnitude)
-wavelength(period.magnitude, depth.magnitude)
-celerity(period.magnitude, depth.magnitude)
+if shallow_test < shallow_limit:
+  print('The wave is a shallow water wave.')
+elif shallow_test > deep_limit:
+  print('The wave is a deep water wave.')
+else:
+  print('The wave is a transitional water wave.')
 ```
-The wavenumber is 0.283, the wavelength is 22.2 meters, and the celerity is
-5.55 m/s.
 
-1b) Component water parcel velocities and pressure at 2 meters below the water level and at wave crest:
+| $kh$ |  $\pi /10$   |
+| ---- | --- |
+|   0.314   |  0.238   |
 
+Using the dispersion relationship and shallow water limits, the wave at the piles is a shallow water.
+
+1c) What are the maximum onshore water particle velocity ($u$ & $w$) at the location of the pile?
+
+The horizontal velocity can be found by
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)} cos( kx - \sigma t)$$
+
+Extreme horizontal velocity values occur at phase positions of kx - $\sigma$ t = 0, $\pi$, ... , which occur under the crest and trough positions. The cosine term of $u$ goes to 1.
+
+$$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
+
+Vertical variation of velocity components should be analyzed at the bottom where
+
+$$k(h+z)=0$$
+
+and the cosh term of $u$ goes to 1. The next simplification is that in shallow water,
+
+$$sinh(kh) = kh$$
+
+Thus, the equation for maximum horizontal onshore water particle velocity can be given as
+
+$$ u = \frac{a \sigma}{kh}$$
+
+```python
+u_max_shallow = (amp2*sigma)/(k*h2)
+print(u_max_shallow)
+```
+The vertical velocity can be found by
 $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} sin( kx - \sigma t)$$
 
-$$ P = -\rho gz + \rho ga\frac{cosh(k(h+z))}{cosh(kh)} cos( kx - \sigma t) $$
+Extreme horizontal velocity values occur at phase positions of kx - $\sigma$ t = $\frac{\pi}{2}$, $\frac{3\pi}{2}$, ..., which occur at the mean water level (MWL) at $z$ = 0.
+
+The sinh terms cancel out and the sine term goes to 1, so the equation for maximum vertical onshore water particle velocity can be given as
+
+$$ w = a \sigma $$
 
 ```python
-def u_vel(T, h, a, x, t, z):
-    """Return the x-velocity of a wave."""
-    sigma = (2*np.pi)/T
-    k = wavenumber(T,h)
-    u_vel = a * sigma * (np.cosh(k*(h+z))/np.sinh(k*h)) * np.cos(k*x - sigma*t)
-    return u_vel
-
-def w_vel(T, h, a, x, t, z):
-    """Return the z-velocity of a wave."""
-    sigma = (2*np.pi)/T
-    k = wavenumber(T,h)
-    a = amp
-    w_vel = a * sigma * (np.sinh(k*(h+z))/np.sinh(k*h))* np.sin(k*x - sigma*t)
-    return w_vel    
-
-def pressure(T, h, a, x, t, z):
-    """Return the hydrostatic and dynamic pressure from a wave."""
-    temp = 25 * u.degC
-    sigma = (2*np.pi)/T
-    rho = pc.density_water(temp).magnitude
-    k = wavenumber(T, h)
-    pressure = (-rho * g.magnitude * z) + rho * g.magnitude * a*
-    np.cosh(k*(h+z))/np.cosh(k*h) * np.cos(k*x - sigma*t)
-    return pressure
-
-z_belowSWL = -2 * u.m
-z_crest = 1 * u.m
-x = 0 * u.m
-t = 0 * u.s
-
-u_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_belowSWL.magnitude)
-w_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_belowSWL.magnitude)
-pressure(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_belowSWL.magnitude)
-
-u_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_crest.magnitude)
-w_vel(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_crest.magnitude)
-pressure(period.magnitude, depth.magnitude, amp.magnitude, x.magnitude,
-t.magnitude, z_crest.magnitude)
+w_max_shallow = amp2*sigma
+print(w_max_shallow)
 ```
 
-At x = 0 m, t = 0 s and z = -2 m, the u-velocity is 1.12 m/s, the w-velocity is 0.0 m/s, and the pressure is 25.8 kPa. At x = 0 m, t = 0 s and z = 1 m, u-velocity is 2.29 m/s, the w-velocity is 0.0 m/s, and the pressure is 2.89 kPa.
-
-
+| Shallow water onshore particle velocities | m/s    |
+| ----------------------------------------- | ------ |
+| $u_{max}$                                 | 1.597  |
+| $w_{max}$                                 | 0.3807 |
 
 ### Problem 2
-Design a seawall to prevent flooding of a coastal highway. The water depth of in front of the seawall is 3 m. The design wave characteristics are period T = 10 seconds and amplitude a = 0.5 m.
+2) A simple harmonic small harmonic amplitude progressive wave train propagates in a rectangular channel with a constant depth, $h$, with wave frequency $\sigma$. The channel width transitions from $B_1$ with amplitude $a_1$ to $B_2$ with amplitude $a_2$. Find $a_2$.
 
-2a) Minimum height of the seawall to prevent flooding:
+$$ B_1 E_1 c_{g1} = B_2 E_2 c_{g2} $$
 
-The height of a seawall ($h_s$) should be determined from the amplitude of the design wave ($a$) and the water depth ($h$).   
+At constant wave depth, $c_{g1} = c_{g2}$.
 
-$$ h_s = (2 * a) + h $$
+$$ \frac{1}{2}\rho g a_1 ^2 B_1 c_{g1} = \frac{1}{2}\rho g a_2 ^2 B_2 c_{g2}$$
+$$ \frac{a_2 ^2}{a_1 ^2} = \frac{B_1}{B_2} $$
 
-```python
-a_designwave = 0.5 * u.m
-h_designwave = 3 * u.m
-h_s = (2 * a_designwave) + h_designwave
-print(h_s)
-```
+$$ \frac{a_2}{a_1} = \sqrt\frac{B_1}{B_2} $$
 
-The seawall should be designed to be at least 4 meters tall.
-
-2b) Maximum total force on the seawall:
-
-The maximum force on the seawall ($F_m$) is a function of the hydrostatic and dynamic pressure of the wave. The following equation was modified from "Water
-Wave Mechanics for Engineers & Scientists" by Dean and Dalrymple.
-
-$$ F_m = \rho g \frac{4h^2+H^2}{2} + \rho g h H \frac{tan(kh)}{kh} $$
-
-```python
-def max_force(T, h, a, x, t):
-    """Return the maximum force that a wave will induce on a seawall."""
-    temp = 25 * u.degC
-    sigma = (2*np.pi)/T
-    rho = pc.density_water(temp).magnitude
-    H = 2 * a
-    k = wavenumber(T, h)
-    max_force = (rho * g.magnitude) * ((4*h**2 + H**2)/2) + (rho * g.magnitude
-    * h * H * np.tanh(k*h)/(k*h))
-    return max_force
-
-period_designwave = 10 * u.s
-print(max_force(period_designwave.magnitude, h_designwave.magnitude,
-a_designwave.magnitude, x, t))
-
-```
-
-The maximum force on the seawall is 209 kN.
-
+$$ a_2 = a_1\sqrt\frac{B_1}{B_2} $$
 
 ```python
 # To convert the document from markdown to pdf
-pandoc Problem_Set_2.md -o Maisel_Problem_Set_2.pdf
+pandoc Problem_Set_3.md -o Maisel_Problem_Set_3.pdf
 ```
