@@ -26,11 +26,17 @@ $k$: wavenumber
 
 $c_p$: celerity (wave phase speed)
 
+$c_g$: group velocity
+
+$n$: ratio of group velocity to phase velocity
+
 $P$: pressure
 
 $F$: force
 
 $u$, $w$: x-velocity, z-velocity components
+
+$E*c_g$: energy flux
 
 ### Governing Equations for Linear Wave Theory Analysis
 
@@ -77,7 +83,7 @@ h2 = 2 * u.m
 sigma = 2 * np.pi / period
 ```
 
-1a) What is the minimum clearance needed to maintain a dry deck:
+1a) What is the minimum clearance needed to maintain a dry deck?
 
 
 The waves measured by the buoys are in deep water.
@@ -130,7 +136,7 @@ else:
 | ---- | --- |
 |   0.314   |  0.238   |
 
-Using the dispersion relationship and shallow water limits, the wave at the piles is a shallow water.
+Using the dispersion relationship and shallow water limits, the wave at the piles is a shallow water wave. This confirms the answer found in 1a. 
 
 1c) What are the maximum onshore water particle velocity ($u$ & $w$) at the location of the pile?
 
