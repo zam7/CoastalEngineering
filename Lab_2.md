@@ -65,8 +65,8 @@ period = 1/freq
 sigma = 2*np.pi/period
 ```
 
-## Calculation of $\frac{\sigma^2 h}{g}
-# Experimental
+#Calculation of $\frac{\sigma^2 h}{g}$
+## Experimental
 ```python
 
 # Experimental measurements of wavelength
@@ -77,7 +77,7 @@ k_exp = 2*np.pi/lmbda
 print(k_exp)
 ```
 
-# Theoretical 
+## Theoretical
 ```python
 
 def wavenumber(T, h):
@@ -95,8 +95,8 @@ k_theor = np.array([wavenumber(period[0],h), wavenumber(period[1],h), wavenumber
 print(k_theor)
 ```
 
-# Comparison of Experimental and Theoretical Results
-$\frac{\sigma^2 h}{g}$ as a function of $ kh $
+## Comparison of Experimental and Theoretical Results
+$\frac{\sigma^2 h}{g}$ as a function of $kh$
 
 ```python
 
@@ -112,9 +112,9 @@ plt.show()
 
 ```
 
-## Calculation of Wave Celerity
+# Calculation of Wave Celerity
 
-# Experimental
+## Experimental
 ```python
 
 celerity_exp = lmbda_exp / period
@@ -122,7 +122,7 @@ print(celerity_exp)
 
 ```
 
-# Theoretical
+## Theoretical
 ```python
 
 def celerity(T,h):
@@ -136,3 +136,5 @@ celerity_theor = np.array([celerity(period[0], h), celerity(period[1], h), celer
 print(celerity_theor)
 
 ```
+
+## Comparison of Experimental and Theoretical Results
