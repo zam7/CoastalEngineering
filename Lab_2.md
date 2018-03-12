@@ -62,20 +62,22 @@ $$ T = \frac{1}{f} $$
 h = 20
 freq = np.array([0.55, 1.00, 1.55])
 period = 1/freq
+sigma = 2*np.pi/period
 ```
 
-# Experimental Approach
+## Calculation of $\frac{\sigma^2 h}{g}
+# Experimental
 ```python
-lmbda = np.array([1.19, 0.62, 0.34])  # these values are taken from experimental measurements of wavelength
 
-print(T)
+# Experimental measurements of wavelength
+lmbda_exp = np.array([1.19, 0.62, 0.34])  
 
 # Find k using the experimentally measured wavelengths
 k_exp = 2*np.pi/lmbda
 print(k_exp)
 ```
 
-# Theoretical Approach
+# Theoretical 
 ```python
 
 def wavenumber(T, h):
@@ -91,4 +93,46 @@ def wavenumber(T, h):
 
 k_theor = np.array([wavenumber(period[0],h), wavenumber(period[1],h), wavenumber(period[2],h)])
 print(k_theor)
+```
+
+# Comparison of Experimental and Theoretical Results
+$\frac{\sigma^2 h}{g}$ as a function of $ kh $
+
+```python
+
+sigh_g_exp = sigma**2 * h / g
+kh_exp = k_exp * h
+plt.plot(kh_exp, kh_exp)
+plt.show()
+
+sigh_g_theor = sigma**2 * h / g
+kh_theor = k_theor * h
+plt.plot(kh_theor, kh_theor)
+plt.show()
+
+```
+
+## Calculation of Wave Celerity
+
+# Experimental
+```python
+
+celerity_exp = lmbda_exp / period
+print(celerity_exp)
+
+```
+
+# Theoretical
+```python
+
+def celerity(T,h):
+    """Return the celerity of wave using period and water height from bed."""
+    k = wavenumber(T,h)
+    lmbda = 2 * np.pi / k
+    celerity = lmbda / T
+    return celerity
+
+celerity_theor = np.array([celerity(period[0], h), celerity(period[1], h), celerity(period[2], h)])
+print(celerity_theor)
+
 ```
