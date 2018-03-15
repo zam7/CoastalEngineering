@@ -204,7 +204,7 @@ plt.show()
 The experimental and theoretical analysis for $\frac{c_p}{gh}$ as a function of $kh$. Only one plot is shown for both wave paddle amplitudes because the results are the same. Again, the experimental results match the theoretical results.
 
 # Water Particle Velocity
-All of the data was collected in the DeFrees Fluids Lab using an ADV to collect velocity data at different z-elevations from the bed. $f_s$, the sampling frequency was 200 Hz. The wave paddle was set at an $f$ of 1.00 Hz. The data was truncated to ensure that all the wave analysis begins at the wave crest, and to ensure that all the data lengths are the same (8,000 points was chosen to ensure long enough datasets). At wave crests, $x$ and $t$ are assumed to be zero, which simplifies the velocity equations to:
+All of the data was collected in the DeFrees Fluids Lab using an ADV to collect velocity data at different z-elevations from the bed. $f_s$, the sampling frequency was 200 Hz. The wave paddle was set at an $f$ of 1.00 Hz. The data was truncated to ensure that all the wave analysis begins at the wave crest. At wave crests, $x$ and $t$ are assumed to be zero, which simplifies the velocity equations to:
 
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
 
@@ -212,7 +212,8 @@ $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)}$$
 
 ## $u_{max}$ and $w_{max}$
 ## Experimental
-First, the velocity amplitude $A$ was found by sorting the absolute values of the data. The mean of the largest 10% of data was chosen.
+First, the velocity amplitude $A$ was found by sorting the absolute values of the data. The mean of the largest 10% of data was chosen. This velocity amplitude is the experimental maximum velocities found for each z-elevation analyzed.
+
 ```python
 z = np.array([-0.075, -0.1, -0.125, -0.175])
 uA_amp_75 = 0.07482475
@@ -236,6 +237,15 @@ w_vel_amp = np.array([wA_amp_75, wA_amp_100, wA_amp_125, wA_amp_175])
 | -0.175 | 0.059395        |       0.009311           |       
 
 ## Theoretical
+Theoretical analysis was done by using $A$ values to calculate $a$, from the relationships given as:
+
+for $u$,
+$$ A = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
+$$ a = \frac{A}{\sigma \frac{cosh(k(h+z))}{sinh(kh)}}$$
+
+for $w$,
+$$ A = a \sigma \frac{sinh(k(h+z))}{sinh(kh)}$$
+$$ a = \frac{A}{\sigma \frac{sinh(k(h+z))}{sinh(kh)}}$$
 
 ```python
 f_wave = 1 # Hz
@@ -249,7 +259,7 @@ sgma = 2 * np.pi * f_wave
 print(sgma)
 ```
 
-After the different A values are used to find $a$, the average of all $a$ values were chosen.
+Eight $a$ values were calculated, and the average of all $a$ values were chosen. This was done because the wave amplitude should be constant across the wave, even at measurements taken at different wave depth.
 
 ```python
 ua_75_mm = uA_amp_75 / (sgma * np.cosh(k_all*(h+z[0])) / np.sinh(k_all*h))
@@ -273,7 +283,11 @@ print(a_mean)
 
 ```
 
-Using the mean $a$ wave, $u$ and $w$ can be found at varying $z$ elevations.
+Using the mean $a$ wave, $u$ and $w$ can be found at varying $z$ elevations by using the following equations:
+$$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
+
+$$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} $$
+
 ```python
 z_theor_array = np.linspace(-0.075, -0.175, num = 50)
 u_theor_array = a_mean * sgma * np.cosh(k_all*(h+z_theor_array)) / np.sinh(k_all*h)
@@ -283,14 +297,21 @@ print(w_theor_array[1])
 
 plt.plot(u_theor_array, z_theor_array)
 plt.plot(u_vel_amp, z, "ro")
-plt.xlabel('u velocity (m/s)', fontsize=18)
-plt.ylabel('z elevations (m)', fontsize=16)
+plt.xlabel('u-velocity (m/s)', fontsize=18)
+plt.ylabel('z-elevations (m)', fontsize=16)
+plt.savefig('uvel.png')
 plt.show()
 
 plt.plot(w_theor_array, z_theor_array)
 plt.plot(w_vel_amp, z, "ro")
-plt.xlabel('w velocity (m/s)', fontsize=18)
-plt.ylabel('z elevations (m)', fontsize=16)
+plt.xlabel('w-velocity (m/s)', fontsize=18)
+plt.ylabel('z-elevations (m)', fontsize=16)
+plt.savefig('wvel.png')
 plt.show()
 
 ```
+![uvel](/Users/Zoeannem/github/Coastal_Engineering/uvel.png)
+
+![wvel](/Users/Zoeannem/github/Coastal_Engineering/wvel.png)
+
+The experimental data matches the theoretical plots at different depths well. The u-velocity plot shows the expected velocity decay due to boundary condition effects of the flume closer to the bed. The w-velocity similarly follows expected trends in which there is close to zero w-velocity close to the bed due to the impermeable surface, and there is some w-velocity away from the bed. The motion of water parcels in waves as decaying votexes is well modeled by the lab. 
