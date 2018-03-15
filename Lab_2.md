@@ -1,12 +1,19 @@
 # CEE 4350 Coastal Engineering
-## Problem Set 3
+## Lab 2
 ## Zoe Maisel
+
+### Introduction:
+An acoustic wave gauge and ADV sensor was used to measure wave amplitude and wave velocity in time. Multiple waves at different wave paddle strokes and frequencies were generated to measure wavelength. This experimental data was compared with theoretical analysis of expected dispersion and wave celerity relationships. The ADV measured water velocity at 4 different heights from the water surface and showed wave profile and velocity decay near bed. Again, experimental data was compared to theoretical analysis. In both cases, the experimental data fit the theoretical results well and were within the expected margin of experimental error.
+
 
 ```python
 from aide_design.play import*
 import pandas as pd
 g = pc.gravity
 import os
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 
 cwd = os.getcwd()  # Get the current working directory (cwd)
 files = os.listdir(cwd)  # Get all the files in that directory
@@ -21,6 +28,8 @@ $a$: wave amplitude
 $A$: velocity amplitude
 
 $f$: frequency
+
+$f_s$: sampling frequency
 
 $h$: water depth
 
@@ -49,7 +58,7 @@ $$ T = \frac{1}{f} $$
 
 $$ \sigma = 2\pi f $$
 
-$k = \frac{2* \pi }{ \lambda}$
+$$k = \frac{2* \pi }{ \lambda}$$
 
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)} cos( kx - \sigma t)$$
 
@@ -57,22 +66,23 @@ $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} sin( kx - \sigma t)$$
 
 For $u$,
 $$ A = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
-$$ a = \frac{A}{\sigma \frac{sinh(k(h+z))}{sinh(kh)}}$$
+$$ a = \frac{A}{\sigma \frac{cosh(k(h+z))}{sinh(kh)}}$$
 
 For $w$,
 $$ A = a \sigma \frac{sinh(k(h+z))}{sinh(kh)}$$
 $$ a = \frac{A}{\sigma \frac{sinh(k(h+z))}{sinh(kh)}}$$
 
+The following conditions were given for the experimental analysis.
 ```python
-h = .20  # m
-freq = np.array([0.55, 1.00, 1.55])
-period = 1/freq
+h = .20  # meters
+freq = np.array([0.55, 1.00, 1.55]) # Hz
+period = 1/freq # second
 sigma = 2 * np.pi/period
 ```
 
 #Calculation of $\frac{\sigma^2 h}{g}$
 ## Experimental
-Using the wave maker and flume, waves at the following experimental conditions were produced:
+Using the wavemaker and flume, waves at the following experimental conditions were produced:
 | Stroke (mm) | Frequency (Hz) |
 | ----------- | -------------- |
 | 5        | 0.55           |
@@ -82,7 +92,7 @@ Using the wave maker and flume, waves at the following experimental conditions w
 |      5       |    1.55             |
 |     10        |    1.55             |
 
-Two wave gauge measurements were used to track wave progression in the flume and to determine wavelength. Wavelength was determined when the two wave gauges reported the same wave in phase because that showed that the wave completed one wavelength to return to its original position. Wavenumber was then found using wavelength data.
+Two wave gauge measurements were used to track wave progression in the flume and to determine wavelength. Wavelength was determined when the two wave gauges reported the same wave in phase, showing that the wave completed one wavelength to return to its original position. Wavenumber was then found using wavelength data.
 
 $k = \frac{2* \pi }{ \lambda}$
 
@@ -101,12 +111,9 @@ print(k_exp)
 | 5           | 1.55           |  0.626   |  10.04   |
 | 10          | 1.55           |  0.626   |  10.04   |
 
-Wavelength was not impacted by stroke conditions; only frequency impacted the wavelength and wavenumber.
-
 ## Theoretical
-Theoretically, wavenumber can be found using the dispersion relationship. This
+Theoretically, wavenumber can be found using the dispersion relationship.
 ```python
-
 def wavenumber(T, h):
   """Return the wavenumber of wave using period and water height from bed."""
   k = 10  # this is a guess to find what k is
@@ -122,8 +129,10 @@ k_theor = np.array([wavenumber(period[0],h), wavenumber(period[1],h), wavenumber
 print(k_theor)
 ```
 
-## Comparison of Experimental and Theoretical Results
+## Comparison and Analysis of Experimental and Theoretical Results
 $\frac{\sigma^2 h}{g}$ as a function of $kh$
+
+As shown by both the experimental and theoretical data, wavelength was not impacted by stroke conditions; only frequency impacted the wavelength and wavenumber. The frequency at which waves are produced by the wavemaker dictates the wavelength because that is what is driving the fluid and energy. The changing stroke may impact the amplitude of the wave, due to conservation of mass principles, but the wavelength remains unimpacted. The equation for wavenumber, which is related to wavelength, does not even require paddle stroke or amplitude as an input. The table and figure below show that the experimental data very closely aligns with the theoretical data, confirming the dominating relationship between frequency and wavelength.
 
 | Frequency (Hz) | Experimental Wavenumber, $k$   |  Theoretical Wavenumber, $k$  |
 | -------------- | ----------------------- | --- |
@@ -134,31 +143,33 @@ $\frac{\sigma^2 h}{g}$ as a function of $kh$
 ```python
 sigh_g_exp = sigma**2 * h / g
 kh_exp = k_exp * h
-plt.plot(kh_exp, sigh_g_exp, 'ro')
-
+plt.plot(kh_exp, sigh_g_exp, 'bo')
+plt.xlabel('kh', fontsize=18)
+plt.ylabel('sigma^2*h/g', fontsize=16)
 sigh_g_theor = sigma**2 * h / g
 kh_theor = k_theor * h
 plt.plot(kh_theor, sigh_g_theor)
+plt.savefig('sigh_g.png')
 plt.show()
 
 ```
-The experimental and theoretical analysis for $\frac{\sigma^2 h}{g}$ as a function of $kh$. The stroke amplitude does not impact the results. 
+![sigma^2*h/g](/Users/Zoeannem/github/Coastal_Engineering/sigh_g.png)
+The experimental and theoretical analysis for $\frac{\sigma^2 h}{g}$ as a function of $kh$. Only one plot is shown for both wave paddle amplitudes because the results are the same.
 
 # Calculation of Wave Celerity
+Wave celerity was calculated as an experimental and theoretical value. Celerity was found experimentally by $c_p = \frac{\lambda}{T}$.
 
 ## Experimental
+Experimental analysis was done using experimentally measured $\lambda$ values and varying frequencies.
 ```python
-
 celerity_exp = lmbda_exp / period
 print(celerity_exp)
-
 ```
 
 ## Theoretical
-Theoretical analysis to determine wave celerity was done using $c_p = \frac{\lambda}{T}$.
+Theoretical analysis to determine wave celerity was done using $c_p = \frac{\lambda}{T}$, from $k$ values and $\lambda$ values calculated from the dispersion relationship.
 
 ```python
-
 def celerity(T,h):
     """Return the celerity of wave using period and water height from bed."""
     k = wavenumber(T,h)
@@ -168,30 +179,32 @@ def celerity(T,h):
 
 celerity_theor = np.array([celerity(period[0], h), celerity(period[1], h), celerity(period[2], h)])
 print(celerity_theor)
-
 ```
 
-
-
-
-## Comparison of Experimental and Theoretical Results
+## Comparison and Analysis of Experimental and Theoretical Results
 
 | Frequency (Hz) | Experimental $c_p$ (m/s)   |  Theoretical $c_p$ (m/s) |
 | -------------- | ----------------------- | --- |
 | 0.55           |     1.334729         |   1.34350047  |
 | 1.00           |       1.22178        |   1.21212773  |
 | 1.55           |        0.969959       |   0.97389372  |
-```python
 
+```python
 cp_gh_exp = celerity_exp / (g*h)
-plt.plot(kh_exp, cp_gh_exp, "ro")
+plt.plot(kh_exp, cp_gh_exp, "bo")
+plt.xlabel('kh', fontsize=18)
+plt.ylabel('cp/gh', fontsize=16)
 cp_gh_theor = celerity_theor / (g*h)
 plt.plot(kh_theor, cp_gh_theor)
+plt.savefig('celerity.png')
 plt.show()
 ```
 
+![cp/gh](/Users/Zoeannem/github/Coastal_Engineering/celerity.png)
+The experimental and theoretical analysis for $\frac{c_p}{gh}$ as a function of $kh$. Only one plot is shown for both wave paddle amplitudes because the results are the same. Again, the experimental results match the theoretical results.
+
 # Water Particle Velocity
-All of the data was collected in the DeFrees Fluids Lab using an ADV to collect velocity data at different z-elevations from the bed. $f_s$, the sampling frequency was 200 Hz. The wave paddle was set at 1.00 Hz. The data was truncated to ensure that all the wave analysis begins at the wave crest, and to ensure that all the data lengths are the same (8,000 points was chosen to ensure long enough datasets). At wave crests, $x$ and $t$ are assumed to be zero, which simplifies the velocity equations to:
+All of the data was collected in the DeFrees Fluids Lab using an ADV to collect velocity data at different z-elevations from the bed. $f_s$, the sampling frequency was 200 Hz. The wave paddle was set at an $f$ of 1.00 Hz. The data was truncated to ensure that all the wave analysis begins at the wave crest, and to ensure that all the data lengths are the same (8,000 points was chosen to ensure long enough datasets). At wave crests, $x$ and $t$ are assumed to be zero, which simplifies the velocity equations to:
 
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
 
