@@ -314,4 +314,12 @@ plt.show()
 
 ![wvel](/Users/Zoeannem/github/Coastal_Engineering/wvel.png)
 
-The experimental data matches the theoretical plots at different depths well. The u-velocity plot shows the expected velocity decay due to boundary condition effects of the flume closer to the bed. The w-velocity similarly follows expected trends in which there is close to zero w-velocity close to the bed due to the impermeable surface, and there is some w-velocity away from the bed. The motion of water parcels in waves as decaying votexes is well modeled by the lab. 
+The experimental data matches the theoretical plots at different depths well. The u-velocity plot shows the expected velocity decay due to boundary condition effects of the flume closer to the bed. The w-velocity similarly follows expected trends in which there is close to zero w-velocity close to the bed due to the impermeable surface, and there is some w-velocity away from the bed. The motion of water parcels in waves as decaying votexes is well modeled by the lab.
+
+<br>
+<br>
+
+```python
+# To convert the document from markdown to pdf
+pandoc Lab_2.md -o Maisel_Lab_2.pdf
+```
