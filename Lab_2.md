@@ -125,7 +125,8 @@ def wavenumber(T, h):
       k = k - 0.0001
   return k
 
-k_theor = np.array([wavenumber(period[0],h), wavenumber(period[1],h), wavenumber(period[2],h)])
+k_theor = np.array([wavenumber(period[0],h),
+ wavenumber(period[1],h), wavenumber(period[2],h)])
 print(k_theor)
 ```
 
@@ -178,7 +179,8 @@ def celerity(T,h):
     celerity = lmbda / T
     return celerity
 
-celerity_theor = np.array([celerity(period[0], h), celerity(period[1], h), celerity(period[2], h)])
+celerity_theor = np.array([celerity(period[0], h),
+ celerity(period[1], h), celerity(period[2], h)])
 print(celerity_theor)
 ```
 
