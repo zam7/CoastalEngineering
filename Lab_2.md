@@ -3,7 +3,7 @@
 ## Zoe Maisel
 
 ### Introduction:
-An acoustic wave gauge and ADV sensor was used to measure wave amplitude and wave velocity in time. Multiple waves at different wave paddle strokes and frequencies were generated to measure wavelength. This experimental data was compared with theoretical analysis of expected dispersion and wave celerity relationships. The ADV measured water velocity at 4 different heights from the water surface and showed wave profile and velocity decay near bed. Again, experimental data was compared to theoretical analysis. In both cases, the experimental data fit the theoretical results well and were within the expected margin of experimental error.
+An acoustic wave gauge and ADV sensor was used to measure wave amplitude and wave velocity in time. Multiple waves at different wave paddle strokes and frequencies were generated to measure wavelength. This experimental data was compared with theoretical analysis of expected dispersion and wave celerity relationships. The ADV measured water velocity at four different heights from the water surface and showed wave profile and velocity decay near bed. Again, experimental data was compared to theoretical analysis. In both cases, the experimental data fit the theoretical results well and were within the expected margin of experimental error.
 
 
 ```python
@@ -154,6 +154,7 @@ plt.show()
 
 ```
 ![sigma^2*h/g](/Users/Zoeannem/github/Coastal_Engineering/sigh_g.png)
+
 The experimental and theoretical analysis for $\frac{\sigma^2 h}{g}$ as a function of $kh$. Only one plot is shown for both wave paddle amplitudes because the results are the same.
 
 # Calculation of Wave Celerity
@@ -201,6 +202,7 @@ plt.show()
 ```
 
 ![cp/gh](/Users/Zoeannem/github/Coastal_Engineering/celerity.png)
+
 The experimental and theoretical analysis for $\frac{c_p}{gh}$ as a function of $kh$. Only one plot is shown for both wave paddle amplitudes because the results are the same. Again, the experimental results match the theoretical results.
 
 # Water Particle Velocity
@@ -282,6 +284,9 @@ a_mean = np.mean(a_all)
 print(a_mean)
 
 ```
+| $k$   | $\sigma$ | mean $a$ (m)|
+| ----- | -------- | --- |
+| 5.184 | 6.283    | 0.0118    |
 
 Using the mean $a$ wave, $u$ and $w$ can be found at varying $z$ elevations by using the following equations:
 $$ u = a \sigma \frac{cosh(k(h+z))}{sinh(kh)}$$
@@ -291,9 +296,9 @@ $$ w = a \sigma \frac{sinh(k(h+z))}{sinh(kh)} $$
 ```python
 z_theor_array = np.linspace(-0.075, -0.175, num = 50)
 u_theor_array = a_mean * sgma * np.cosh(k_all*(h+z_theor_array)) / np.sinh(k_all*h)
-print(u_theor_array[1])
+print(u_theor_array)
 w_theor_array = a_mean * sgma * np.sinh(k_all*(h+z_theor_array)) / np.sinh(k_all*h)
-print(w_theor_array[1])
+print(w_theor_array)
 
 plt.plot(u_theor_array, z_theor_array)
 plt.plot(u_vel_amp, z, "ro")
