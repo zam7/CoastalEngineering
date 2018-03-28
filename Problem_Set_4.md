@@ -256,9 +256,9 @@ del_pos = 0.5
 del_neg = -0.5
 lmbda = 5000 #m
 T = 10 #s
-xo = -4000 #m
+xo = -1000 #m
 
-length = abs(xo/del_x)
+length = abs(4000/del_x)
 print(length)
 length_init = int(length - 1)
 # Need to initalize all the values
@@ -335,16 +335,21 @@ def bathymetry_wave(_del):
         #print(stop-start)
     return k, del_y, y, alpha, cg, b, a
 
-# del = 0 condition
 xplot = np.linspace(-4000, 1, num = 79)
-plt.plot(xplot, bathymetry_wave(del_zero)[2])
+
+# del = 0 condition
+
+y_zero = bathymetry_wave(del_zero)[2]
+plt.plot(xplot, y_zero)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('y in alongshore direction', fontsize=14)
 plt.suptitle('Waveray from deep water to shoreline, del = 0', fontsize=18)
 plt.savefig('waveraydelzero.png')
 plt.show()
 
-plt.plot(xplot, bathymetry_wave(del_zero)[6])
+
+a_zero = bathymetry_wave(del_zero)[6]
+plt.plot(xplot, a_zero)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('wave amplitude along wave ray', fontsize=14)
 plt.suptitle('Wave amplitude from deep water to shoreline, del = 0', fontsize=18)
@@ -352,15 +357,16 @@ plt.savefig('waveampdelzero.png')
 plt.show()
 
 # del = 0.5 condition
-xplot = np.linspace(-4000, 1, num = 79)
-plt.plot(xplot, bathymetry_wave(del_pos)[2])
+y_pos = bathymetry_wave(del_pos)[2]
+plt.plot(xplot, y_pos)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('y in alongshore direction', fontsize=14)
 plt.suptitle('Waveray from deep water to shoreline, del = 0.5', fontsize=18)
 plt.savefig('waveraydelpos.png')
 plt.show()
 
-plt.plot(xplot, bathymetry_wave(del_pos)[6])
+a_pos = bathymetry_wave(del_pos)[6]
+plt.plot(xplot, a_pos)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('wave amplitude along wave ray', fontsize=14)
 plt.suptitle('Wave amplitude from deep water to shoreline, del = 0.5', fontsize=18)
@@ -368,15 +374,16 @@ plt.savefig('waveampdelpos.png')
 plt.show()
 
 # del = -0.5 condition
-xplot = np.linspace(-4000, 1, num = 79)
-plt.plot(xplot, bathymetry_wave(del_neg)[2])
+y_neg = bathymetry_wave(del_neg)[2]
+plt.plot(xplot, y_neg)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('y in alongshore direction', fontsize=14)
 plt.suptitle('Waveray from deep water to shoreline, del = -0.5', fontsize=18)
 plt.savefig('waveraydelneg.png')
 plt.show()
 
-plt.plot(xplot, bathymetry_wave(del_neg)[6])
+a_neg = bathymetry_wave(del_neg)[6]
+plt.plot(xplot, a_neg)
 plt.xlabel('x in shore-perpendicular direction', fontsize=14)
 plt.ylabel('wave amplitude along wave ray', fontsize=14)
 plt.suptitle('Wave amplitude from deep water to shoreline, del = -0.5', fontsize=18)
