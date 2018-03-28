@@ -16,12 +16,15 @@ $$ T_{\frac{1}{3}} = \frac{3}{N}\sum_{1}^{\frac{N}{3}}{T_i} $$
 $$ T_c = \frac{T_R}{N_z} $$
 
 Significant wave height and wave period are reported in the following table.
-|     |  |
-| --- | -- |
-| $H_{\frac{1}{3}}$ (cm) | 4.88|
-| $H_{rms}$ (cm)  | 0.244    |
-|  $T_{\frac{1}{3}}$ (s)  | 1.08                         |    
-| $T_c$  (s)| 0.719  |  
+
+|                        |       |
+| ---------------------- | ----- |
+| $H_{\frac{1}{3}}$ (cm) | 4.88  |
+| $H_{rms}$ (cm)         | 0.244 |
+| $T_{\frac{1}{3}}$ (s)  | 1.08  |
+| $T_c$                  | 0.719 |
+
+
 
 A histogram of the wave heights was made using the wave data provided for analysis.
 
@@ -105,19 +108,21 @@ $$ H_{\frac{1}{3}} = 6*\frac{\sqrt2*H_{rms} * sin(\frac{\pi}{6})}{\pi} $$
 
 |                         |       |
 | ----------------------- | ----- |
-|          AUC               |   1.63    | |$a_{rms}$               | 1.804 |
+| AUC                     | 1.63  |
+| $a_{rms}$               | 1.804 |
 | $H_{rms}$ (cm)          | 3.609 |
-| $H_{max}$ (cm)          | 5.103  |
+| $H_{max}$ (cm)          | 5.103 |
 | $H_{\frac{1}{10}}$ (cm) | 5.082 |
-| $H_{\frac{1}{3}}$ (cm)  |  4.87     |
+| $H_{\frac{1}{3}}$ (cm)  | 4.87  |
+
 
 
 The maximum of $S_{\eta \eta}$ was determined to find the most energetic component of the total energy spectrum. The maximum $S_{\eta \eta}$ = 2.87 and was found at $f$ = 0.81.
 
 The dynamic pressure, $S_{pp}$, was calculated by
-$$ S_{pp} = \frac{\sqrt(S_{\eta \eta}) * g * rho}{cosh(kh)}  $$
+$$ S_{pp} = \frac{\sqrt(S_{\eta \eta}) * g * \rho}{cosh(kh)}  $$
 
-using $h$ = 10 $m$ and $k$ = 3.4 $m^{-1}$.
+using $h$ = 10 $m$, $k$ = 3.4 $m^{-1}$, $g$ = 9.81 $m/s$, and $\rho$ = 1000 $kg/m^3$.
 
 The following python and R code was used for analysis.
 
@@ -207,9 +212,9 @@ $$ a = a_o \sqrt(\frac{C_{go}}{C_g}) \sqrt(\frac{b_o}{b}) $$
 
 X ranges from -4000 to 0 $m$ and will calculate different values for $h$ and $k$ which are used in calculating $y$ and $a$. Iteratively looping through all of the x-values produces vectors for $y$ and $a$ which have been plotted for the three conditions.
 
-Bathymetry for the three conditions are shown below:
-<br>
-<br>
+Bathymetry for the three conditions are shown below.
+
+
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelzero.png)
 <br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelpos.png)
@@ -217,9 +222,8 @@ Bathymetry for the three conditions are shown below:
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelneg.png)
 <br>
 
-Waverays for the three conditions are shown below:
-<br>
-<br>
+Waverays for the three conditions are shown below.
+
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveray.png)
 <br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveraydelpos.png)
@@ -227,9 +231,8 @@ Waverays for the three conditions are shown below:
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveraydelneg.png)
 <br>
 
-Wave amplitude for the three conditions are shown below:
-<br>
-<br>
+Wave amplitude for the three conditions are shown below.
+
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveampdelzero.png)
 <br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveampdelpos.png)
