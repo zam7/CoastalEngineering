@@ -208,16 +208,19 @@ $$ a = a_o \sqrt(\frac{C_{go}}{C_g}) \sqrt(\frac{b_o}{b}) $$
 X ranges from -4000 to 0 $m$ and will calculate different values for $h$ and $k$ which are used in calculating $y$ and $a$. Iteratively looping through all of the x-values produces vectors for $y$ and $a$ which have been plotted for the three conditions.
 
 Bathymetry for the three conditions are shown below:
+<br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelzero.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelpos.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/bathydelneg.png)
 
 Waverays for the three conditions are shown below:
+<br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveray.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveraydelpos.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveraydelneg.png)
 
 Wave amplitude for the three conditions are shown below:
+<br>
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveampdelzero.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveampdelpos.png)
 ![](/Users/Zoeannem/github/Coastal_Engineering/waveampdelneg.png)
