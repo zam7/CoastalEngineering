@@ -33,80 +33,26 @@ The hydraulic-powered wave paddle in the DeFrees Lab was used to generate waves 
 | 0.1   | 19.2     | 1.92                                 |
 
 
-##### Non-dimensional plot of shoaling formula
+##### Non-dimensional plot of shoaling formula with experimental data
+
+Experimental data was compared with theoretical calculations using the shoaling formula.
 
 $$ C_{p0} = \frac{\lambda_0}{T} $$
 $$ T = \frac{1}{frequency} $$
 
-$$ C_{p1} = (1 + \frac{4\pi \frac{h}{\lambda}}{sinh(4\pi \frac{h}{\lambda})})(\frac{gT}{2\pi})tanh(\frac{2\pi h}{\lambda}) $$
-from Chapter 3 of the Coastal Engineering Manual, page II-3-13.
-
-```python
-slope = 1/10
-SWL_cm = 19.2
-H0_cm = np.array([7.7, 7.1, 4.5, 2.9])
-x_amp_m = np.array([-1, -0.6, -0.3, 0, 0.1, 0.2])
-W1_amp_cm = np.array([4.00, 1.63, 1.25, 0.6, 0, 0])
-W2_amp_cm = np.array([4.25, 1.90, 1.55, 1.10, 0.85, 0.3])
-W3_amp_cm = np.array([2.25, 2.05, 1.65, 0.9, 0.35, 0.25])
-W4_amp_cm = np.array([1.5, 1.7, 1.1, 0.75, 0.5, 0.25])
-W_lambda_cm = np.array([88.8, 148.75, 270.72, 270.72])
-freq = np.array([1.25, 0.85, 0.5, 0.5])
-T = 1/freq
-
-Cg0 = W_lambda_cm/T
-print(Cg0)
-```
 Constant width in the flume was assumed.
 
 In shallow water,
+
+$$ C_{g0} = C_{p0} $$
+$$ C_{p0} = \frac{\lambda_0}{T} $$
 $$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{\sqrt(gh(x))}) $$
 
-```Python
-h = np.linspace(0.001, 2, num = 50)
-h_h0 = h/(SWL_cm/100)
-```
+In transitional water, $C_{g0}$ changes by
+$$ n = \frac{1}{2}[1 + \frac{2kh}{sinh(2kh)}] $$
+$$ C_{g0} = nC_{p0} $$
 
-The nondimensional form is calculated by
-```Python
-W1_amp_nd = np.sqrt(Cg0[0])/(g.magnitude * h)**(1/4)
-W2_amp_nd = np.sqrt(Cg0[1])/(g.magnitude * h)**(1/4)
-W3_amp_nd = np.sqrt(Cg0[2])/(g.magnitude * h)**(1/4)
-W4_amp_nd = np.sqrt(Cg0[3])/(g.magnitude * h)**(1/4)
-
-plt.plot(h_h0, W1_amp_nd)
-plt.xlabel('Nondimensional Water Depth, h(x)/h0', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W1_amp_nd.png')
-plt.show()
-
-plt.plot(h_h0, W2_amp_nd)
-plt.xlabel('Nondimensional Water Depth, h(x)/h0', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W2_amp_nd.png')
-plt.show()
-
-plt.plot(h_h0, W3_amp_nd)
-plt.xlabel('Nondimensional Water Depth, h(x)/h0', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W3_amp_nd.png')
-plt.show()
-
-plt.plot(h_h0, W4_amp_nd)
-plt.xlabel('Nondimensional Water Depth, h(x)/h0', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W4_amp_nd.png')
-plt.show()
-```
-
-
-then, use experimental data and nondimensionalize it to compare with theoretical
-
-##### Experimental Data
+# NEED TO FIGURE OUT
 
 Experimental results for amplitude are shown below.
 | Case | $H_0$ (cm) | $a$ (cm) @ $x$=-1.0 m | $a$ (cm) @ $x$=-0.6 m | $a$ (cm) @ $x$=-0.3 m | $a$ (cm) @ $x$=0 m | $a$ (cm) @ $x$=0.1 m | $a$ (cm) @ $x$=0.2 m |
@@ -116,31 +62,103 @@ Experimental results for amplitude are shown below.
 | W3   | 4.5        | 2.25                  | 2.05                  | 1.65                  | 0.9                | 0.35                 | 0.25                     |
 | W4   | 2.9        | 1.5                   | 1.7                   | 1.1                   | 0.75               | 0.5                  | 0.25                 |
 
+
+
 ```python
-plt.plot(x_amp_m, W1_amp_cm, 'ro')
+slope = 1/10
+SWL_cm = 19.2
+H0_cm = np.array([7.7, 7.1, 4.5, 2.9])
+a0_cm = H0_cm / 2
+
+x_amp_m = np.array([-1, -0.6, -0.3, 0, 0.1, 0.2])
+
+W1_amp_cm = np.array([4.00, 1.63, 1.25, 0.6, 0, 0])
+W2_amp_cm = np.array([4.25, 1.90, 1.55, 1.10, 0.85, 0.3])
+W3_amp_cm = np.array([2.25, 2.05, 1.65, 0.9, 0.35, 0.25])
+W4_amp_cm = np.array([1.5, 1.7, 1.1, 0.75, 0.5, 0.25])
+
+W1_amp_nd = W1_amp_cm / a0_cm[0]
+W2_amp_nd = W2_amp_cm / a0_cm[1]
+W3_amp_nd = W3_amp_cm / a0_cm[2]
+W4_amp_nd = W4_amp_cm / a0_cm[3]
+
+W_lambda_cm = np.array([88.8, 148.75, 270.72, 270.72])
+freq = np.array([1.25, 0.85, 0.5, 0.5])
+T = 1/freq
+
+Cg0 = W_lambda_cm/T
+print(Cg0)
+
+x_plot_m = np.linspace(0.001, 1, num = 50)
+h_cm = x_plot_m / 10
+print(h_cm)
+h_m = h_cm * 10
+```
+
+The nondimensional form is calculated by
+```Python
+W1_amp_nd = np.sqrt(Cg0[0])/(g.magnitude * h_m)**(1/4)
+W2_amp_nd = np.sqrt(Cg0[1])/(g.magnitude * h_m)**(1/4)
+W3_amp_nd = np.sqrt(Cg0[2])/(g.magnitude * h_m)**(1/4)
+W4_amp_nd = np.sqrt(Cg0[3])/(g.magnitude * h_m)**(1/4)
+
+plt.plot(x_plot_m, W1_amp_nd)
+plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
+plt.suptitle('', fontsize=18)
+plt.savefig('W1_amp_nd.png')
+plt.show()
+
+plt.plot(x_plot_m, W2_amp_nd)
+plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
+plt.suptitle('', fontsize=18)
+plt.savefig('W2_amp_nd.png')
+plt.show()
+
+plt.plot(x_plot_m, W3_amp_nd)
+plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
+plt.suptitle('', fontsize=18)
+plt.savefig('W3_amp_nd.png')
+plt.show()
+
+plt.plot(x_plot_m, W4_amp_nd)
+plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
+plt.suptitle('', fontsize=18)
+plt.savefig('W4_amp_nd.png')
+plt.show()
+```
+
+##### Experimental Data
+
+
+```python
+plt.plot(x_amp_m, W1_amp_nd, 'ro')
 plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude (cm)', fontsize=14)
+plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
 plt.suptitle('Wave 1 Amplitude on Sloping Shore', fontsize=18)
 plt.savefig('W1_amp.png')
 plt.show()
 
-plt.plot(x_amp_m, W2_amp_cm, 'ro')
+plt.plot(x_amp_m, W2_amp_nd, 'ro')
 plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude (cm)', fontsize=14)
+plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
 plt.suptitle('Wave 2 Amplitude on Sloping Shore', fontsize=18)
 plt.savefig('W2_amp.png')
 plt.show()
 
-plt.plot(x_amp_m, W3_amp_cm, 'ro')
+plt.plot(x_amp_m, W3_amp_nd, 'ro')
 plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude (cm)', fontsize=14)
+plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
 plt.suptitle('Wave 3 Amplitude on Sloping Shore', fontsize=18)
 plt.savefig('W3_amp.png')
 plt.show()
 
-plt.plot(x_amp_m, W4_amp_cm, 'ro')
+plt.plot(x_amp_m, W4_amp_nd, 'ro')
 plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude (cm)', fontsize=14)
+plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
 plt.suptitle('Wave 4 Amplitude on Sloping Shore', fontsize=18)
 plt.savefig('W4_amp.png')
 plt.show()
@@ -169,6 +187,7 @@ print(iribarren)
 ```
 
 Experimental results for breaker type are shown below. $\lambda$ was measured experimentally and $\xi$ was calculated using the above equation.
+
 | Case | $\lambda_0$ (cm) | $\xi$ | Predicted Breaker Type | Observed breaker Type |
 | ---- | ---------------- | ----- | ---------------------- | --------------------- |
 | W1   | 88.80            | 0.339 | Spilling               | Spilling              |
