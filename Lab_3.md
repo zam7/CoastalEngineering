@@ -89,8 +89,8 @@ T = 1/freq
 Cg0 = W_lambda_cm/T
 print(Cg0)
 
-x_plot_m = np.linspace(0.001, 1, num = 50)
-h_cm = x_plot_m / 10
+x_plot_m = np.linspace(-1, 0.001, num = 50)
+h_cm = abs(x_plot_m) / 10
 print(h_cm)
 h_m = h_cm * 10
 ```
@@ -103,33 +103,38 @@ W3_amp_nd = np.sqrt(Cg0[2])/(g.magnitude * h_m)**(1/4)
 W4_amp_nd = np.sqrt(Cg0[3])/(g.magnitude * h_m)**(1/4)
 
 plt.plot(x_plot_m, W1_amp_nd)
-plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.xlabel('x in on-shore direction (m)', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
 plt.suptitle('', fontsize=18)
 plt.savefig('W1_amp_nd.png')
 plt.show()
 
 plt.plot(x_plot_m, W2_amp_nd)
-plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.xlabel('x in on-shore direction (m)', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
 plt.suptitle('', fontsize=18)
 plt.savefig('W2_amp_nd.png')
 plt.show()
 
 plt.plot(x_plot_m, W3_amp_nd)
-plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.xlabel('x in on-shore direction (m)', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
 plt.suptitle('', fontsize=18)
 plt.savefig('W3_amp_nd.png')
 plt.show()
 
 plt.plot(x_plot_m, W4_amp_nd)
-plt.xlabel('x opposite wave propagation (m)', fontsize=14)
+plt.xlabel('x in on-shore direction (m)', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
 plt.suptitle('', fontsize=18)
 plt.savefig('W4_amp_nd.png')
 plt.show()
 ```
+
+![](/Users/Zoeannem/github/Coastal_Engineering/W1_amp_nd.png)
+![](/Users/Zoeannem/github/Coastal_Engineering/W2_amp_nd.png)
+![](/Users/Zoeannem/github/Coastal_Engineering/W3_amp_nd.png)
+![](/Users/Zoeannem/github/Coastal_Engineering/W4_amp_nd.png)
 
 ##### Experimental Data
 
