@@ -63,8 +63,8 @@ In shallow water,
 $$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{\sqrt(gh(x))}) $$
 
 ```Python
-h = np.linspace(0.1, 200, num = 50)
-h_h0 = h/SWL_cm
+h = np.linspace(0.001, 2, num = 50)
+h_h0 = h/(SWL_cm/100)
 ```
 
 The nondimensional form is calculated by
