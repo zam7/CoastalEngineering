@@ -17,6 +17,17 @@ $$ \xi = \frac{s}{\sqrt(H_0/\lambda_0)} $$
 ```Python
 from aide_design.play import*
 g = pc.gravity
+
+def wavenumber(T, h):
+  """Return the wavenumber of wave using period and water height from bed."""
+  k = 11  # this is a guess to find what k is
+  diff = (((2*np.pi)/T)**2)-(g.magnitude * k * np.tanh(k*h))
+  while diff<0:
+      LHS = ((2*np.pi)/T)**2
+      RHS = g.magnitude * k * np.tanh(k*h)
+      diff = LHS - RHS
+      k = k - 0.0001
+  return k
 ```
 
 ### Wave Amplitude:
@@ -46,7 +57,7 @@ In shallow water,
 
 $$ C_{g0} = C_{p0} $$
 $$ C_{p0} = \frac{\lambda_0}{T} $$
-$$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{\sqrt(gh(x))}) $$
+$$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{2\sqrt(gh(x))}) $$
 
 In transitional water, $C_{g0}$ changes by
 $$ n = \frac{1}{2}[1 + \frac{2kh}{sinh(2kh)}] $$
@@ -67,13 +78,16 @@ Experimental results for amplitude are shown below.
 ```python
 slope = 1/10
 SWL_cm = 19.2
+SWL_m = SWL_cm / 100
 H0_cm = np.array([7.7, 7.1, 4.5, 2.9])
 a0_cm = H0_cm / 2
 
 H0_m = H0_cm/100
 a0_m = a0_cm/100
 
-x_amp_m = np.array([-1, -0.6, -0.3, 0, 0.1, 0.2])
+x_m_exp = np.array([-1, -0.6, -0.3, 0, 0.1, 0.2])
+h_m_exp = x_m_exp / 10
+h_nd_exp = h_m_exp / SWL_m
 
 W1_amp_cm = np.array([4.00, 1.63, 1.25, 0.6, 0, 0])
 W2_amp_cm = np.array([4.25, 1.90, 1.55, 1.10, 0.85, 0.3])
@@ -85,10 +99,10 @@ W2_amp_m = W2_amp_cm/100
 W3_amp_m = W3_amp_cm/100
 W4_amp_m = W4_amp_cm/100
 
-W1_amp_nd = W1_amp_m / a0_m[0]
-W2_amp_nd = W2_amp_m / a0_m[1]
-W3_amp_nd = W3_amp_m / a0_m[2]
-W4_amp_nd = W4_amp_m / a0_m[3]
+W1_amp_nd_exp = W1_amp_m / a0_m[0]
+W2_amp_nd_exp = W2_amp_m / a0_m[1]
+W3_amp_nd_exp = W3_amp_m / a0_m[2]
+W4_amp_nd_exp = W4_amp_m / a0_m[3]
 
 W_lambda_cm = np.array([88.8, 148.75, 270.72, 270.72])
 W_lambda_m = W_lambda_cm/100
@@ -96,92 +110,69 @@ W_lambda_m = W_lambda_cm/100
 freq = np.array([1.25, 0.85, 0.5, 0.5])
 T = 1/freq
 
+#this is actually Cp and need to find out Cg
+# find n by doing k = 2pi/lambda0
 Cg0_ms = W_lambda_m/T
 print(Cg0_ms)
 
 x_plot_m = np.linspace(-1, 0.001, num = 50)
-h_cm = abs(x_plot_m) / 10
-print(h_cm)
-h_m = h_cm * 10
-```
+h_m_theor = abs(x_plot_m) / 10
+h_nd_theor = h_m/SWL_m
 
+k1 = np.ones(len(h_m))
+k2 = np.ones(len(h_m))
+k3 = np.ones(len(h_m))
+k4 = np.ones(len(h_m))
+
+for i in range(0, len(h_m)):
+  k1[i] = wavenumber(T[0], h_m[i])
+  k2[i] = wavenumber(T[1], h_m[i])
+  k3[i] = wavenumber(T[2], h_m[i])
+  k4[i] = wavenumber(T[3], h_m[i])
+
+print(k1)
+```
+Assume that within x = 1, we are in shallow water so Cg = 2sqrt(gh)
 The nondimensional form is calculated by
 ```Python
-W1_amp_nd = np.sqrt(Cg0[0])/(g.magnitude * h_m)**(1/4)
-W2_amp_nd = np.sqrt(Cg0[1])/(g.magnitude * h_m)**(1/4)
-W3_amp_nd = np.sqrt(Cg0[2])/(g.magnitude * h_m)**(1/4)
-W4_amp_nd = np.sqrt(Cg0[3])/(g.magnitude * h_m)**(1/4)
+W1_amp_nd_theor = np.sqrt(Cg0[0])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
+W2_amp_nd_theor = np.sqrt(Cg0[1])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
+W3_amp_nd_theor = np.sqrt(Cg0[2])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
+W4_amp_nd_theor = np.sqrt(Cg0[3])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
 
-plt.plot(x_plot_m, W1_amp_nd)
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
+plt.plot(h_nd_theor, W1_amp_nd_theor, label = "Wave 1")
+plt.plot(h_nd_theor, W2_amp_nd_theor, label = "Wave 2")
+plt.plot(h_nd_theor, W3_amp_nd_theor, label = "Wave 3")
+plt.plot(h_nd_theor, W4_amp_nd_theor, label = "Wave 4")
+plt.xlabel('Nondimensional Water Depth', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W1_amp_nd.png')
+plt.legend(loc='upper left', borderaxespad=0.)
+plt.suptitle('Theoretical', fontsize=18)
+plt.savefig('W_amp_nd_theor.png')
 plt.show()
 
-plt.plot(x_plot_m, W2_amp_nd)
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W2_amp_nd.png')
-plt.show()
 
-plt.plot(x_plot_m, W3_amp_nd)
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W3_amp_nd.png')
-plt.show()
-
-plt.plot(x_plot_m, W4_amp_nd)
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
-plt.suptitle('', fontsize=18)
-plt.savefig('W4_amp_nd.png')
-plt.show()
 ```
 
-![](/Users/Zoeannem/github/Coastal_Engineering/W1_amp_nd.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W2_amp_nd.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W3_amp_nd.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W4_amp_nd.png)
+![](/Users/Zoeannem/github/Coastal_Engineering/W_amp_nd_theor.png)
+
 
 ##### Experimental Data
 
 
 ```python
-plt.plot(x_amp_m, W1_amp_nd, 'ro')
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
-plt.suptitle('Wave 1 Amplitude on Sloping Shore', fontsize=18)
-plt.savefig('W1_amp.png')
-plt.show()
-
-plt.plot(x_amp_m, W2_amp_nd, 'ro')
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
-plt.suptitle('Wave 2 Amplitude on Sloping Shore', fontsize=18)
-plt.savefig('W2_amp.png')
-plt.show()
-
-plt.plot(x_amp_m, W3_amp_nd, 'ro')
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
-plt.suptitle('Wave 3 Amplitude on Sloping Shore', fontsize=18)
-plt.savefig('W3_amp.png')
-plt.show()
-
-plt.plot(x_amp_m, W4_amp_nd, 'ro')
-plt.xlabel('x in on-shore direction (m)', fontsize=14)
-plt.ylabel('Wave Amplitude, nondimensional', fontsize=14)
-plt.suptitle('Wave 4 Amplitude on Sloping Shore', fontsize=18)
-plt.savefig('W4_amp.png')
+plt.plot(h_nd_exp , W1_amp_nd_exp, 'ro', label = "Wave 1")
+plt.plot(h_nd_exp , W2_amp_nd_exp, 'ro', label = "Wave 2")
+plt.plot(h_nd_exp , W3_amp_nd_exp, 'ro', label = "Wave 3")
+plt.plot(h_nd_exp , W4_amp_nd_exp, 'ro', label = "Wave 4")
+plt.xlabel('Nondimensional Water Depth', fontsize=14)
+plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
+plt.legend(loc='upper left', borderaxespad=0.)
+plt.suptitle('Experimental', fontsize=18)
+plt.savefig('W_amp_nd_exp.png')
 plt.show()
 ```
-![](/Users/Zoeannem/github/Coastal_Engineering/W1_amp.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W2_amp.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W3_amp.png)
-![](/Users/Zoeannem/github/Coastal_Engineering/W4_amp.png)
+![](/Users/Zoeannem/github/Coastal_Engineering/W_amp_nd_exp.png)
 
 ### Wave Breaker Types
 
