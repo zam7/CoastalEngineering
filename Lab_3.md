@@ -20,13 +20,13 @@ g = pc.gravity
 
 def wavenumber(T, h):
   """Return the wavenumber of wave using period and water height from bed."""
-  k = 11  # this is a guess to find what k is
+  k = 800  # this is a guess to find what k is
   diff = (((2*np.pi)/T)**2)-(g.magnitude * k * np.tanh(k*h))
   while diff<0:
       LHS = ((2*np.pi)/T)**2
       RHS = g.magnitude * k * np.tanh(k*h)
       diff = LHS - RHS
-      k = k - 0.0001
+      k = k - 0.5
   return k
 ```
 
@@ -53,15 +53,13 @@ $$ T = \frac{1}{frequency} $$
 
 Constant width in the flume was assumed.
 
-In shallow water,
+In transitional water,
 
-$$ C_{g0} = C_{p0} $$
+$$ C_{g0} = n_0C_{p0} $$
 $$ C_{p0} = \frac{\lambda_0}{T} $$
-$$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{2\sqrt(gh(x))}) $$
+$$ \frac{a(x)}{a_0} = \sqrt(\frac{C_{g0}}{2n_1\sqrt(gh(x))}) $$
 
-In transitional water, $C_{g0}$ changes by
 $$ n = \frac{1}{2}[1 + \frac{2kh}{sinh(2kh)}] $$
-$$ C_{g0} = nC_{p0} $$
 
 # NEED TO FIGURE OUT
 
@@ -112,33 +110,47 @@ T = 1/freq
 
 #this is actually Cp and need to find out Cg
 # find n by doing k = 2pi/lambda0
-Cg0_ms = W_lambda_m/T
-print(Cg0_ms)
+Cp0_ms = W_lambda_m/T
+k_theor_0 = np.array([wavenumber(T[0], SWL_m),
+                      wavenumber(T[1], SWL_m),
+                      wavenumber(T[2], SWL_m),
+                      wavenumber(T[3], SWL_m)])
+
+n_theor_0 = np.array([1/2 * (1 + (2 * k1_theor_0 * SWL_m)/np.sinh(2 * k1_theor_0 * SWL_m)),
+                      1/2 * (1 + (2 * k2_theor_0 * SWL_m)/np.sinh(2 * k2_theor_0 * SWL_m)),
+                      1/2 * (1 + (2 * k3_theor_0 * SWL_m)/np.sinh(2 * k3_theor_0 * SWL_m)),
+                      1/2 * (1 + (2 * k4_theor_0 * SWL_m)/np.sinh(2 * k4_theor_0 * SWL_m))])
+
+Cg0_ms = Cp0_ms * n_theor_0
 
 x_plot_m = np.linspace(-1, 0.001, num = 50)
 h_m_theor = abs(x_plot_m) / 10
-h_nd_theor = h_m/SWL_m
+h_nd_theor = h_m_theor/SWL_m
 
-k1 = np.ones(len(h_m))
-k2 = np.ones(len(h_m))
-k3 = np.ones(len(h_m))
-k4 = np.ones(len(h_m))
+k1_theor = np.ones(len(h_m_theor))
+k2_theor = np.ones(len(h_m_theor))
+k3_theor = np.ones(len(h_m_theor))
+k4_theor = np.ones(len(h_m_theor))
 
-for i in range(0, len(h_m)):
-  k1[i] = wavenumber(T[0], h_m[i])
-  k2[i] = wavenumber(T[1], h_m[i])
-  k3[i] = wavenumber(T[2], h_m[i])
-  k4[i] = wavenumber(T[3], h_m[i])
+for i in range(0, len(h_m_theor)):
+  k1_theor[i] = wavenumber(T[0], h_m_theor[i])
+  k2_theor[i] = wavenumber(T[1], h_m_theor[i])
+  k3_theor[i] = wavenumber(T[2], h_m_theor[i])
+  k4_theor[i] = wavenumber(T[3], h_m_theor[i])
 
-print(k1)
+n1_theor = 1/2 * (1 + (2 * k1_theor * h_m_theor)/np.sinh(2 * k1_theor * h_m_theor))
+n2_theor = 1/2 * (1 + (2 * k2_theor * h_m_theor)/np.sinh(2 * k2_theor * h_m_theor))
+n3_theor = 1/2 * (1 + (2 * k3_theor * h_m_theor)/np.sinh(2 * k3_theor * h_m_theor))
+n4_theor = 1/2 * (1 + (2 * k4_theor * h_m_theor)/np.sinh(2 * k4_theor * h_m_theor))
+
 ```
 Assume that within x = 1, we are in shallow water so Cg = 2sqrt(gh)
 The nondimensional form is calculated by
 ```Python
-W1_amp_nd_theor = np.sqrt(Cg0[0])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
-W2_amp_nd_theor = np.sqrt(Cg0[1])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
-W3_amp_nd_theor = np.sqrt(Cg0[2])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
-W4_amp_nd_theor = np.sqrt(Cg0[3])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))/10
+W1_amp_nd_theor = np.sqrt(Cg0_ms[0])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))
+W2_amp_nd_theor = np.sqrt(Cg0_ms[1])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))
+W3_amp_nd_theor = np.sqrt(Cg0_ms[2])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))
+W4_amp_nd_theor = np.sqrt(Cg0_ms[3])/((np.sqrt(2))*(g.magnitude * h_m_theor)**(1/4))
 
 plt.plot(h_nd_theor, W1_amp_nd_theor, label = "Wave 1")
 plt.plot(h_nd_theor, W2_amp_nd_theor, label = "Wave 2")
@@ -162,9 +174,9 @@ plt.show()
 
 ```python
 plt.plot(h_nd_exp , W1_amp_nd_exp, 'ro', label = "Wave 1")
-plt.plot(h_nd_exp , W2_amp_nd_exp, 'ro', label = "Wave 2")
-plt.plot(h_nd_exp , W3_amp_nd_exp, 'ro', label = "Wave 3")
-plt.plot(h_nd_exp , W4_amp_nd_exp, 'ro', label = "Wave 4")
+plt.plot(h_nd_exp , W2_amp_nd_exp, 'bo', label = "Wave 2")
+plt.plot(h_nd_exp , W3_amp_nd_exp, 'go', label = "Wave 3")
+plt.plot(h_nd_exp , W4_amp_nd_exp, 'mo', label = "Wave 4")
 plt.xlabel('Nondimensional Water Depth', fontsize=14)
 plt.ylabel('Nondimensional Shoaling Formula', fontsize=14)
 plt.legend(loc='upper left', borderaxespad=0.)
