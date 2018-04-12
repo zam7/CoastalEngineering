@@ -70,6 +70,9 @@ SWL_cm = 19.2
 H0_cm = np.array([7.7, 7.1, 4.5, 2.9])
 a0_cm = H0_cm / 2
 
+H0_m = H0_cm/100
+a0_m = a0_cm/100
+
 x_amp_m = np.array([-1, -0.6, -0.3, 0, 0.1, 0.2])
 
 W1_amp_cm = np.array([4.00, 1.63, 1.25, 0.6, 0, 0])
@@ -77,17 +80,24 @@ W2_amp_cm = np.array([4.25, 1.90, 1.55, 1.10, 0.85, 0.3])
 W3_amp_cm = np.array([2.25, 2.05, 1.65, 0.9, 0.35, 0.25])
 W4_amp_cm = np.array([1.5, 1.7, 1.1, 0.75, 0.5, 0.25])
 
-W1_amp_nd = W1_amp_cm / a0_cm[0]
-W2_amp_nd = W2_amp_cm / a0_cm[1]
-W3_amp_nd = W3_amp_cm / a0_cm[2]
-W4_amp_nd = W4_amp_cm / a0_cm[3]
+W1_amp_m = W1_amp_cm/100
+W2_amp_m = W2_amp_cm/100
+W3_amp_m = W3_amp_cm/100
+W4_amp_m = W4_amp_cm/100
+
+W1_amp_nd = W1_amp_m / a0_m[0]
+W2_amp_nd = W2_amp_m / a0_m[1]
+W3_amp_nd = W3_amp_m / a0_m[2]
+W4_amp_nd = W4_amp_m / a0_m[3]
 
 W_lambda_cm = np.array([88.8, 148.75, 270.72, 270.72])
+W_lambda_m = W_lambda_cm/100
+
 freq = np.array([1.25, 0.85, 0.5, 0.5])
 T = 1/freq
 
-Cg0 = W_lambda_cm/T
-print(Cg0)
+Cg0_ms = W_lambda_m/T
+print(Cg0_ms)
 
 x_plot_m = np.linspace(-1, 0.001, num = 50)
 h_cm = abs(x_plot_m) / 10
@@ -186,7 +196,6 @@ The Iribarren number was calculated by
 $$ \xi = \frac{s}{\sqrt(H_0/\lambda_0)} $$
 
 ```Python
-
 iribarren = slope/np.sqrt(H0_cm/W_lambda_cm)
 print(iribarren)
 ```
