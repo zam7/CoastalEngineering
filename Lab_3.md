@@ -30,6 +30,8 @@ def wavenumber(T, h):
 
 ### Wave Amplitude:
 The hydraulic-powered wave paddle in the DeFrees Lab was used to generate waves for the experiment. Experimental wave conditions generated for the lab are shown below.
+
+
 | Case | Stroke (mm) | Frequency (Hz) |
 | ---- | ----------- | -------------- |
 | W1   | 35          | 1.25           |
@@ -37,11 +39,15 @@ The hydraulic-powered wave paddle in the DeFrees Lab was used to generate waves 
 | W3   | 40          | 0.5            |
 | W4   | 30          | 0.5            |
 
+<br>
+
 | slope | SWL (cm) | Distance from x=0 to flat bottom (m) |
 | ----- | -------- | ------------------------------------ |
 | 0.1   | 19.2     | 1.92                                 |
 
 Experimental results for amplitude are shown below.
+<br>
+
 | Case | $H_0$ (cm) | $a$ (cm) @ $x$=-1.0 m | $a$ (cm) @ $x$=-0.6 m | $a$ (cm) @ $x$=-0.3 m | $a$ (cm) @ $x$=0 m | $a$ (cm) @ $x$=0.1 m | $a$ (cm) @ $x$=0.2 m |
 | ---- | ---------- | --------------------- | --------------------- | --------------------- | ------------------ | -------------------- | -------------------- |
 | W1   | 7.70       | 4.00                  | 1.63                  | 1.25                  | 0.60               | 0                    | 0                    |
@@ -49,7 +55,7 @@ Experimental results for amplitude are shown below.
 | W3   | 4.5        | 2.25                  | 2.05                  | 1.65                  | 0.9                | 0.35                 | 0.25                     |
 | W4   | 2.9        | 1.5                   | 1.7                   | 1.1                   | 0.75               | 0.5                  | 0.25                 |
 
-
+<br>
 Experimental data was compared with theoretical calculations using the shoaling formula. Constant width in the flume was assumed. The waves were analyzed in transitional water.
 
 ### Experimental Analysis
@@ -137,10 +143,14 @@ k_theor_0 = np.array([wavenumber(T[0], SWL_m),
                       wavenumber(T[2], SWL_m),
                       wavenumber(T[3], SWL_m)])
 
-n_theor_0 = np.array([1/2 * (1 + (2 * k_theor_0[0] * SWL_m)/np.sinh(2 * k_theor_0[0] * SWL_m)),
-                      1/2 * (1 + (2 * k_theor_0[1] * SWL_m)/np.sinh(2 * k_theor_0[1] * SWL_m)),
-                      1/2 * (1 + (2 * k_theor_0[2] * SWL_m)/np.sinh(2 * k_theor_0[2] * SWL_m)),
-                      1/2 * (1 + (2 * k_theor_0[3] * SWL_m)/np.sinh(2 * k_theor_0[3] * SWL_m))])
+n_theor_0 = np.array([1/2 * (1 + (2 * k_theor_0[0] * SWL_m)/
+                                            np.sinh(2 * k_theor_0[0] * SWL_m)),
+                      1/2 * (1 + (2 * k_theor_0[1] * SWL_m)/
+                                            np.sinh(2 * k_theor_0[1] * SWL_m)),
+                      1/2 * (1 + (2 * k_theor_0[2] * SWL_m)/
+                                            np.sinh(2 * k_theor_0[2] * SWL_m)),
+                      1/2 * (1 + (2 * k_theor_0[3] * SWL_m)/
+                                            np.sinh(2 * k_theor_0[3] * SWL_m))])
 
 Cg0_ms = Cp0_ms * n_theor_0
 ```
@@ -167,10 +177,14 @@ for i in range(0, len(h_m_theor)):
   k4_theor[i] = wavenumber(T[3], h_m_theor[i])
 
 # Calculate a new n value for each k and h term
-n1_theor = 1/2 * (1 + (2 * k1_theor * h_m_theor)/np.sinh(2 * k1_theor * h_m_theor))
-n2_theor = 1/2 * (1 + (2 * k2_theor * h_m_theor)/np.sinh(2 * k2_theor * h_m_theor))
-n3_theor = 1/2 * (1 + (2 * k3_theor * h_m_theor)/np.sinh(2 * k3_theor * h_m_theor))
-n4_theor = 1/2 * (1 + (2 * k4_theor * h_m_theor)/np.sinh(2 * k4_theor * h_m_theor))
+n1_theor = 1/2 * (1 + (2 * k1_theor * h_m_theor)/
+                        np.sinh(2 * k1_theor * h_m_theor))
+n2_theor = 1/2 * (1 + (2 * k2_theor * h_m_theor)/
+                        np.sinh(2 * k2_theor * h_m_theor))
+n3_theor = 1/2 * (1 + (2 * k3_theor * h_m_theor)/
+                        np.sinh(2 * k3_theor * h_m_theor))
+n4_theor = 1/2 * (1 + (2 * k4_theor * h_m_theor)/
+                        np.sinh(2 * k4_theor * h_m_theor))
 
 ```
 
@@ -185,10 +199,14 @@ $$ a_{ND} = \sqrt(\frac{C_{g0}}{2n_1\sqrt(gh(x))}) $$
 ```Python
 h_nd_theor = h_m_theor/SWL_m
 
-W1_amp_nd_theor = np.sqrt(Cg0_ms[0])/((np.sqrt(2 * n1_theor))*(g.magnitude * h_m_theor)**(1/4))
-W2_amp_nd_theor = np.sqrt(Cg0_ms[1])/((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
-W3_amp_nd_theor = np.sqrt(Cg0_ms[2])/((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
-W4_amp_nd_theor = np.sqrt(Cg0_ms[3])/((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
+W1_amp_nd_theor = np.sqrt(Cg0_ms[0])/
+                      ((np.sqrt(2 * n1_theor))*(g.magnitude * h_m_theor)**(1/4))
+W2_amp_nd_theor = np.sqrt(Cg0_ms[1])/
+                      ((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
+W3_amp_nd_theor = np.sqrt(Cg0_ms[2])/
+                      ((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
+W4_amp_nd_theor = np.sqrt(Cg0_ms[3])/
+                      ((np.sqrt(2 * n2_theor))*(g.magnitude * h_m_theor)**(1/4))
 
 ```
 The four theoretical conditons were then plotted, as shown below.
@@ -213,10 +231,14 @@ The experimental data shows wave amplitude decreasing as the bed gets shallower 
 ```Python
 # Only plot experimental data up to x = 0 m
 h_nd_exp_comp = np.array([h_nd_exp[0], h_nd_exp[1], h_nd_exp[2], h_nd_exp[3]])
-W1_amp_nd_exp_comp = np.array([W1_amp_nd_exp[0], W1_amp_nd_exp[1], W1_amp_nd_exp[2], W1_amp_nd_exp[3]])
-W2_amp_nd_exp_comp = np.array([W2_amp_nd_exp[0], W2_amp_nd_exp[1], W2_amp_nd_exp[2], W2_amp_nd_exp[3]])
-W3_amp_nd_exp_comp = np.array([W3_amp_nd_exp[0], W3_amp_nd_exp[1], W3_amp_nd_exp[2], W3_amp_nd_exp[3]])
-W4_amp_nd_exp_comp = np.array([W4_amp_nd_exp[0], W4_amp_nd_exp[1], W4_amp_nd_exp[2], W4_amp_nd_exp[3]])
+W1_amp_nd_exp_comp = np.array([W1_amp_nd_exp[0], W1_amp_nd_exp[1],
+                              W1_amp_nd_exp[2], W1_amp_nd_exp[3]])
+W2_amp_nd_exp_comp = np.array([W2_amp_nd_exp[0], W2_amp_nd_exp[1],
+                              W2_amp_nd_exp[2], W2_amp_nd_exp[3]])
+W3_amp_nd_exp_comp = np.array([W3_amp_nd_exp[0], W3_amp_nd_exp[1],
+                              W3_amp_nd_exp[2], W3_amp_nd_exp[3]])
+W4_amp_nd_exp_comp = np.array([W4_amp_nd_exp[0], W4_amp_nd_exp[1],
+                              W4_amp_nd_exp[2], W4_amp_nd_exp[3]])
 
 plt.plot(-h_nd_theor, W1_amp_nd_theor, label = "Wave 1")
 plt.plot(-h_nd_theor, W2_amp_nd_theor, label = "Wave 2")
@@ -242,6 +264,7 @@ Wave breaks can occur in three ways, as shown by the following diagram.
 
 The Iribarren number is used to theoretically predict the type of wave break.
 Theoretical demarcations of the Iribarren number, $\xi$, are:
+
 | $\xi$             | Breaker Type |
 | ----------------- | ------------ |
 | $\xi$ < 0.5       | Spilling     |
@@ -262,9 +285,10 @@ Experimental results for breaker type are shown below. $\lambda$ was measured ex
 | W1   | 88.80            | 0.339 | Spilling               | Spilling              |
 | W2   | 148.75           | 0.458 | Spilling               | Plunging              |
 | W3   | 270.72           | 0.776 | Plunging               | Spilling              |
-| W4   | 270.72           | 0.966 | Plunging               | Surging              |
+| W4   | 270.72           | 0.966 | Plunging               | Surging               |
 
 Experimental results for breaker location are shown below.
+
 | Case | $h_b$ (cm) | $H_b$ (cm) | $\frac{H_b}{h_b}$ |
 | ---- | ---------- | ---------- | ----------------- |
 | W1   | 7.5        | 4.9        | 0.653             |
