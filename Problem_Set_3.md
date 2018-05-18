@@ -4,7 +4,7 @@
 
 ```python
 from aide_design.play import*
-g = pc.gravity
+g = con.GRAVITY
 ```
 
 ### Variable definition:
@@ -121,7 +121,7 @@ def wavenumber(T, h):
   return k
 
 k = wavenumber(period.magnitude, h2.magnitude) * 1/u.m
-
+print(k)
 shallow_limit = np.pi/10
 deep_limit = np.pi
 shallow_test = k * h2
