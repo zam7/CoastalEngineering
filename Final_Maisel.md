@@ -78,16 +78,45 @@ where amplitude $a$ and the radian frequency $\sigma$ can be obtained from the d
 
 The following procedure was adapted from Dean and Dalrymple derivations provided on page 85 of Water Wave Mechanics for Engineers and Scientists.
 
-Pressure gauges placed on the bottom of water columns or channels meausure hydrostatic pressure and the oscillating dynamic pressure. The wave is responsible for creating the dynamic pressure, and can be used to find the free surface displacement $\eta$. Dynamic pressure can be found by subtracting the mean hydrostatic pressure from the pressure gauge data. Equations for analysis are given as
+Pressure gauges placed in water columns or channels measure hydrostatic pressure and the oscillating dynamic pressure. The wave is responsible for creating the dynamic pressure, and can be used to find the free surface displacement $\eta$. Dynamic pressure can be found by subtracting the mean hydrostatic pressure from total pressure gauge data. Equations for analysis are given as
 
 $$ \eta(t) = \frac{P_d(t)}{\rho g \frac{1}{cosh(kh)}} $$
 
+Pressure sensor systems must be carefully placed to ensure that they are measuring the correct wave. For example, if a pressure sensor to calculate dynamic pressure of deep water waves is placed on the bottom of a channel, it will not perform well because the energy decays by the time the deep water wave reaches the bottom of the channel. However, if pressure sensors are placed above the bed at a height certain to be less than half the wavelength, the pressure sensor can be used. To solve the above equation, information must be known about water depth, and wavenumber or wavelength. 
+
 a) Find the water depth and wavelength for $a = 5 cm$, $\sigma = 6.1 \frac{rad}{s}$, and $P_d(t) = 165 cos(\sigma t)$ $Pa$
 
-# Use sigma to find T
-# solve for kh from dispersion relationship
-# Determine whether wave is deep or shallow water - solve for k and h from sigma
-# Find lambda from k. 
+Information is not provided about whether the wave is deep or shallow. For analysis purposes, the wave is assumed to be deep.
+
+First, period $T$ is calculated by $T = \frac{2\pi}{\sigma}$
+```Python
+sgma = 6.1
+T = 2*np.pi/sgma
+```
+Period $T = 1.03 s$
+Then, the dispersion relationship was used to solve for kh in deep water waves where
+$$ \sigma^2 = gktanh(kh) $$
+simplifies to
+$$ \sigma^2 = gk $$
+as $tanh(kh)$ approaches 1.
+
+Because the wave is analyzed as a deep water wave, $k = \frac{\sigma^2}{g}$
+
+```python
+k = sgma**2/g.magnitude
+```
+$k$ is found to be 3.8 $\frac{1}{m}$.
+
+Wavelength can be found as $ \lambda = \frac{2\pi}{k}$
+
+```python
+lmbda = 2*np.pi/k
+```
+$\lambda$ is found to be 1.66 meters.
+
+Lastly, $h$ can be found by the full dispersion relationship, $\sigma^2 = gktanh(kh)$.
+$h$ is found to be 0.92 meters.
+
 
 3. In a wave tank experiment, a wave gauge is used to record the oscillations of the free surface, which can be described by
 $$ \eta = acos(kx-\sigma t) + aRcos(kx + \sigma t + \theta) $$
