@@ -69,6 +69,26 @@ depth = lambda_2/2
 ```
 $depth = 30 m $.
 
+2. In a wave tank experiment, a wave gauge is used to record the oscillations of the
+free surface, which can be described by
+
+$$ \eta (t) = a cos(\sigma t) $$
+
+where amplitude $a$ and the radian frequency $\sigma$ can be obtained from the data. The water depth and wavelength, $\lambda$, are unknown. However, you do have access to a pressure gauge so that you can measure the dynamic pressure under the wave, $P_d(t)$.
+
+The following procedure was adapted from Dean and Dalrymple derivations provided on page 85 of Water Wave Mechanics for Engineers and Scientists.
+
+Pressure gauges placed on the bottom of water columns or channels meausure hydrostatic pressure and the oscillating dynamic pressure. The wave is responsible for creating the dynamic pressure, and can be used to find the free surface displacement $\eta$. Dynamic pressure can be found by subtracting the mean hydrostatic pressure from the pressure gauge data. Equations for analysis are given as
+
+$$ \eta(t) = \frac{P_d(t)}{\rho g \frac{1}{cosh(kh)}} $$
+
+a) Find the water depth and wavelength for $a = 5 cm$, $\sigma = 6.1 \frac{rad}{s}$, and $P_d(t) = 165 cos(\sigma t)$ $Pa$
+
+# Use sigma to find T
+# solve for kh from dispersion relationship
+# Determine whether wave is deep or shallow water - solve for k and h from sigma
+# Find lambda from k. 
+
 3. In a wave tank experiment, a wave gauge is used to record the oscillations of the free surface, which can be described by
 $$ \eta = acos(kx-\sigma t) + aRcos(kx + \sigma t + \theta) $$
 
@@ -166,9 +186,78 @@ k = 0.447 $m^{-1}$
 $a$ is a function of $\eta$ and maximum displacement on the seawall. For the given conditions, the maximum displacement was found to be 1.27 meters, so that will be the value used for a.
 ```python
 a = 1.27 #m
-g= g.magnitude
+g = g.magnitude
 F = (1/2)*rho_water*g*h**2 + rho_water*g*h*a*(1/(k*h))*(np.sinh(k*h)/
         (np.cosh(k*h)+0.5*rho_water*g*a**2))
 
 ```
-The maximum force on the seawall is $49.05 * 10^4 (\frac{N}{m})$
+The maximum force on the seawall is $49.05 * 10^4 (\frac{N}{m})$.
+
+4. An incident wave train with amplitude of 1 m and a period of 10 s propagates in a
+channel in which the water depth changes gradually from 10 m to 5 m, and the channel width
+diverges from 10 m to 20 m over a long transition section.
+
+a) Assuming that the reflected wave is negligible, what is the amplitude of the transmitted wave?
+
+The governing equation to determine wave amplitude in shoaling conditions is:
+$$ a(x) = a_0 \sqrt(\frac{C_{g0}}{C_g(x)})\sqrt(\frac{b_0}{b(x)}) $$
+
+where
+
+$$ \frac{C_{g0}}{C_g(x)} = \frac{k(x)(1+\frac{2k_0h_0}{sinh(k_0h_0)})}{k_0(1+\frac{2k(x)h(x)}{sinh(k(x)h(x))})} $$
+
+Analysis of the wave train will first be done using x=0 as the beginning of the channel in which the water depth is 10 m and the width is 10 m. The end of the channel, for now simply denoted as $L$, is where the water depth is 5 m and the width is 20 m.
+
+```Python
+a1 = 1 #m
+T = 10 #s
+h1 = 10 #m
+h2 = 5 #m
+b1 = 10 #m
+b2 = 20 #m
+g = con.GRAVITY
+
+k1 = wavenumber(T, h1)
+k2 = wavenumber(T, h2)
+
+ratio_Cg = (k2*(1+(2*k1*h1)/(np.sinh(k1*h1)))) / (k1*(1+(2*k2*h2)/(np.sinh(k2*h2))))
+print(ratio_Cg)
+
+a2 = a1*np.sqrt(ratio_Cg)*np.sqrt(b1/b2)
+print(a2)
+```
+
+The transmitted wave at the end of the channel is 0.815 meters in amplitude.
+
+The above analysis is true for waves before they break onshore. Therefore, the transition region must be long enough such that the waves do not break before being transmitted through the end of the channel. Breaking waves are governed by
+
+$$ H_b = \kappa h_b $$
+
+where $\kappa = 0.78$, $h_b$ is the water depth at breaking, and $H_b$ is the wave height at breaking.
+
+The initial and final condition are checked to ensure that a wave did not break.
+
+```Python
+kap = 0.78
+H_b1 = kap*h1
+H_b2 = kap*h2
+
+print(H_b2)
+
+```
+
+The initial wave breaking height condition is 7.8 meters and the final wave breaking height condition is 3.9 meters. In both cases, the actual wave height is 2 meters or less, so the waves are not expected to break. The middle of the channel is checked to determine what the breaking height would be there, where water depth is 7.5 m and width is 15.
+```Python
+h_mid = 7.5 #m
+k_mid = wavenumber(T, h_mid)
+b_mid = 15 #m
+
+ratio_Cg = (k_mid*(1+(2*k1*h1)/(np.sinh(k1*h1)))) / (k1*(1+(2*k_mid*h_mid)/(np.sinh(k_mid*h_mid))))
+print(ratio_Cg)
+
+a_mid = a1*np.sqrt(ratio_Cg)*np.sqrt(b1/b_mid)
+print(a_mid)
+```
+In the middle of the channel, where water height is 7.5 meters, the expected amplitude is 0.86 meters, so the wave would not be expected to break.
+
+Because the water depth is always great enough to ensure that the wave will not break at the calculated wave amplitudes and heights, the transition region is not of great concern. It is important for the region to be continuous and smooth to avoid areas of discontinuity. Slopes in flumes can be 1/10 while beach slopes may be closer to 1/50. Therefore, the transition region could range from 50 meters long to 250 meters long.
